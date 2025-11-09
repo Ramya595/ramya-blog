@@ -1,0 +1,163 @@
+---
+title: "Remove Duplicates from an Array"
+description: "Efficiently remove duplicates from an array using JavaScript Set and Hash Map approaches with examples and real-world applications."
+date: "2025-10-31"
+tags: ["Arrays", "Hash Map", "JavaScript", "Data Cleaning"]
+---
+
+# 🧩 Remove Duplicates from an Array  
+
+Removing duplicates is a very common and important operation in programming.  
+Whether you’re processing data, filtering user input, or optimizing performance — this problem appears everywhere.
+
+---
+
+## 🧠 Category: Array
+
+We are working with **arrays**, one of the most frequently used data structures.  
+This problem tests your understanding of **iteration, Sets, and Hash Maps**.
+
+---
+
+## 🧠 Problem Statement
+
+Given an array `nums`, remove duplicate elements so that each element appears only once.  
+Return the **new array** (order can be preserved or not, depending on the method).
+
+---
+
+### Example
+
+```text
+Input: nums = [1, 2, 2, 3, 4, 4, 5]
+Output: [1, 2, 3, 4, 5]
+````
+
+---
+
+## 💡 Use Case in Real Projects
+
+Duplicate removal is widely used in:
+
+* 🧾 **Data Cleaning:** Removing redundant records from CSVs or APIs
+* 🛍️ **E-commerce:** Ensuring unique product listings
+* 🧑‍💻 **Web Development:** Avoiding duplicate user entries (emails, tags, IDs)
+* 📊 **Analytics:** Ensuring clean datasets before visualization
+
+---
+
+## ⚙️ Approach 1 — Using `Set`
+
+The **Set** object in JavaScript automatically stores **unique values**.
+So, converting the array to a Set and back removes duplicates in one line!
+
+---
+
+### 🔗 View Solution (Click to Expand)
+
+<details>
+<summary>💻 JavaScript Code — Using Set</summary>
+
+```javascript
+function removeDuplicates(nums) {
+  return [...new Set(nums)];
+}
+
+// Example
+console.log(removeDuplicates([1, 2, 2, 3, 4, 4, 5]));
+// Output: [1, 2, 3, 4, 5]
+```
+
+</details>
+
+---
+
+## ⚙️ Approach 2 — Using Hash Map
+
+If you want more control (like preserving order or counting duplicates),
+you can use a **Hash Map** manually.
+
+---
+
+### 🔗 View Solution (Click to Expand)
+
+<details>
+<summary>💻 JavaScript Code — Using Hash Map</summary>
+
+```javascript
+function removeDuplicates(nums) {
+  const seen = {};
+  const result = [];
+
+  for (const num of nums) {
+    if (!seen[num]) {
+      seen[num] = true;
+      result.push(num);
+    }
+  }
+
+  return result;
+}
+
+// Example
+console.log(removeDuplicates([1, 2, 2, 3, 4, 4, 5]));
+// Output: [1, 2, 3, 4, 5]
+```
+
+</details>
+
+---
+
+## 🌍 Real-World Example
+
+Imagine you’re building a **blog platform**.
+When users add **tags** to their posts, you want to ensure there are **no duplicate tags**.
+
+```javascript
+const userTags = ["JavaScript", "React", "JavaScript", "WebDev"];
+const uniqueTags = [...new Set(userTags)];
+
+console.log(uniqueTags);
+// ["JavaScript", "React", "WebDev"]
+```
+
+✅ Keeps your UI clean and your database optimized.
+
+---
+
+## 🧮 Example Walkthrough
+
+| Step | Element | Seen (Map)   | Result Array |
+| ---- | ------- | ------------ | ------------ |
+| 1    | 1       | {1}          | [1]          |
+| 2    | 2       | {1,2}        | [1,2]        |
+| 3    | 2       | already seen | [1,2]        |
+| 4    | 3       | {1,2,3}      | [1,2,3]      |
+| 5    | 4       | {1,2,3,4}    | [1,2,3,4]    |
+| 6    | 4       | already seen | [1,2,3,4]    |
+| 7    | 5       | {1,2,3,4,5}  | [1,2,3,4,5]  |
+
+---
+
+## ⏱️ Complexity
+
+* **Time Complexity:** O(n)
+* **Space Complexity:** O(n)
+
+---
+
+## ✅ Summary
+
+* Use **Set** for simplicity and performance.
+* Use **Hash Map** for more control (like preserving insertion order or extra logic).
+* A must-know for data manipulation in interviews and real projects.
+
+---
+
+## 🔗 Related Problems
+
+* [Two Sum](../two-sum-dsa)
+* [Intersection of Arrays](../intersection-of-arrays)
+
+```
+
