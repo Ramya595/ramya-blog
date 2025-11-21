@@ -117,14 +117,12 @@ function reverseStringBetter(str) {
 
 Swap characters from both ends → move pointers inward.
 
-### **Steps**
+### **Steps (Plain Text)**
 
-<Steps>
-  <Steps.Step>Initialize left = 0, right = length - 1</Steps.Step>
-  <Steps.Step>Swap characters at left and right</Steps.Step>
-  <Steps.Step>Move left++ and right--</Steps.Step>
-  <Steps.Step>Repeat until both pointers meet</Steps.Step>
-</Steps>
+1. Initialize `left = 0` and `right = length - 1`
+2. Swap characters at `left` and `right`
+3. Increment `left++` and decrement `right--`
+4. Repeat until both pointers meet
 
 ### **Code (Array In-Place)**
 
@@ -189,3 +187,7 @@ function reverseStringOptimal(str) {
 
 Pointer-based reversal is one of the simplest yet most powerful techniques.
 It improves understanding of indexing, mutation, and in-place transformations — core skills for interviews and real-world engineering.
+
+```
+
+---
