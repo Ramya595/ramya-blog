@@ -1,107 +1,50 @@
 ---
 title: "2️⃣ Binary Search"
-description: "Brute Force, Better Approach, and Optimal Approach for Binary Search with examples, code, time/space complexity."
+description: "Learn Binary Search with brute force, better, and optimal approaches including real-world examples, time complexity, and space complexity."
+date: "2025-11-21"
 ---
+
+import { CodeBlock } from "@/components/CodeBlock"
 
 # 2️⃣ Binary Search — Efficient Searching in Sorted Arrays
 
-Searching is one of the most common operations in computing.  
-When your data is **sorted**, Binary Search gives you an ultra-fast way to find elements in **O(log n)** time.
+Binary Search is a classic algorithm to efficiently search for an element in a **sorted array**. Unlike linear search, it reduces the search space by half at each step.
 
-This article walks through **Brute Force → Better → Optimal** approaches with explanations, real-world examples, and code.
-
----
-
-## 🚀 Problem Statement
-Given a **sorted array** and a **target value**, find the index of the target.  
-If not found, return `-1`.
+Let’s break it down with **three approaches**.
 
 ---
-
-# 🧠 Approaches
 
 ## 1️⃣ Brute Force Approach
-The simplest way — check every element one by one.
 
-### **Idea**
-- Start from index `0`  
-- Compare each element with the target  
-- Stop when found
+**Idea:** Check every element one by one until we find the target.
 
-### **Code**
 ```js
 function linearSearch(arr, target) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i] === target) return i;
   }
-  return -1;
+  return -1; // element not found
 }
 ````
 
-### **Time Complexity:**
+**Time Complexity:** O(n) – Worst case, we may have to traverse the entire array.
+**Space Complexity:** O(1) – No extra space needed.
 
-* ⏱️ `O(n)` — checks each element
-
-### **Space Complexity:**
-
-* 📦 `O(1)` — no extra memory
-
-### **Real-world example**
-
-* Searching your name in an **unsorted** attendance list
-* Scanning every product on a supermarket shelf
+**Real-world example:**
+Looking for a name in an **unsorted guest list**. You must check each name one by one.
 
 ---
 
-## 2️⃣ Better Approach (Using Built-in Methods)
+## 2️⃣ Better Approach — Binary Search (Iterative)
 
-Modern languages have optimized search routines.
+**Idea:**
 
-### **Idea**
+* Works only on **sorted arrays**.
+* Compare the middle element with the target:
 
-Use built-in search functions (like `indexOf`) that are internally optimized.
-
-### **Code**
-
-```js
-function betterSearch(arr, target) {
-  return arr.indexOf(target);
-}
-```
-
-### **Time Complexity:**
-
-* ⏱️ `O(n)` (but usually slightly optimized internally)
-
-### **Space Complexity:**
-
-* 📦 `O(1)`
-
-### **Real-world example**
-
-* Searching a song name in your **offline playlist**, where the app sequentially checks entries
-* Searching for a keyword inside a text file
-
-> ⚠️ This approach is not optimal for sorted arrays, but it's simpler and slightly better than manual loops.
-
----
-
-## 3️⃣ Optimal Approach — Binary Search 🔥
-
-### **Idea**
-
-Instead of searching the whole array, repeatedly divide the array in half.
-
-### **Steps**
-
-<Steps>
-  <Steps.Step>Check the middle element</Steps.Step>
-  <Steps.Step>If target is smaller → search left half</Steps.Step>
-  <Steps.Step>If target is larger → search right half</Steps.Step>
-  <Steps.Step>Repeat until found or range becomes empty</Steps.Step>
-</Steps>
-
-### **Code**
+  * If equal → Found
+  * If target < middle → Search left half
+  * If target > middle → Search right half
 
 ```js
 function binarySearch(arr, target) {
@@ -109,47 +52,54 @@ function binarySearch(arr, target) {
   let right = arr.length - 1;
 
   while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
-    if (arr[mid] === target) return mid;
+    let mid = Math.floor((left + right) / 2);
 
-    if (target < arr[mid]) {
-      right = mid - 1;
-    } else {
-      left = mid + 1;
-    }
+    if (arr[mid] === target) return mid;
+    else if (target < arr[mid]) right = mid - 1;
+    else left = mid + 1;
   }
-  return -1;
+
+  return -1; // element not found
 }
 ```
 
-### **Time Complexity:**
+**Time Complexity:** O(log n) – Each step halves the search space.
+**Space Complexity:** O(1) – Only variables used.
 
-* ⏱️ `O(log n)` — divides data in half every step
-
-### **Space Complexity:**
-
-* 📦 `O(1)` — iterative approach
-  *(Recursive version costs O(log n) space)*
-
-### **Real-world examples**
-
-* Searching a word in a physical **dictionary**
-* “Guess the Number” game using **higher/lower** logic
-* Looking up entries in **phone books**, **database indexes**, **binary search trees**
+**Real-world example:**
+Searching for a **word in a dictionary**. You don’t check each word; you open near the middle and narrow down.
 
 ---
 
-# 📌 Summary Table
+## 3️⃣ Optimal Approach — Binary Search (Recursive)
 
-| Approach    | Description        | Time         | Space |
-| ----------- | ------------------ | ------------ | ----- |
-| Brute Force | Check all elements | O(n)         | O(1)  |
-| Better      | Built-in search    | O(n)         | O(1)  |
-| Optimal     | Binary Search      | **O(log n)** | O(1)  |
+**Idea:** Same as iterative binary search but implemented recursively.
+
+```js
+function binarySearchRecursive(arr, target, left = 0, right = arr.length - 1) {
+  if (left > right) return -1;
+
+  let mid = Math.floor((left + right) / 2);
+
+  if (arr[mid] === target) return mid;
+  else if (target < arr[mid]) return binarySearchRecursive(arr, target, left, mid - 1);
+  else return binarySearchRecursive(arr, target, mid + 1, right);
+}
+```
+
+**Time Complexity:** O(log n) – Same efficiency as iterative.
+**Space Complexity:** O(log n) – Recursive stack adds space usage.
+
+**Real-world example:**
+Finding a **specific record in a sorted database** using recursion to minimize iterative code.
 
 ---
 
-# 🧩 Final Thoughts
+### ⚡ Key Takeaways
 
-Binary Search is a fundamental algorithm every developer must master.
-It's faster, cleaner, and extremely powerful when working with **sorted data**.
+* Always **sort the array** before using binary search.
+* Iterative binary search is **space-efficient**.
+* Recursive binary search is elegant but uses **extra stack space**.
+* Binary search reduces **searching time drastically** compared to linear search.
+
+---
