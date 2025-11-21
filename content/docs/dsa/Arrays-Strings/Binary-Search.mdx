@@ -1,0 +1,191 @@
+---
+title: "Binary Search — Efficient Searching in Sorted Arrays"
+description: "Learn brute force, optimized binary search, complexity, real-world use cases, and implementation examples."
+tags:
+  - DSA
+  - Binary Search
+  - Algorithms
+  - Problem Solving
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# 🔎 Binary Search — Efficient Searching in Sorted Arrays
+
+Binary Search is one of the most fundamental algorithms in computer science.  
+It helps you **search an element in a sorted array in O(log n)** time — making it extremely efficient for large datasets.
+
+This article covers:
+
+- Brute Force Approach  
+- Why Binary Search is Better  
+- Step-by-step Explanation  
+- JavaScript & Python Code  
+- Real-World Use Cases  
+- Time & Space Complexity  
+
+---
+
+## 🪜 1. Problem Definition
+
+> **Given a sorted array and a target value, determine if the value exists in the array and return its index (or -1 if not found).**
+
+Example:
+
+```js
+Input: arr = [2, 4, 7, 9, 13, 21], target = 9
+Output: 3
+````
+
+---
+
+## 🐢 2. Brute Force Approach (Linear Search)
+
+The simplest way is to scan every element from left to right.
+
+### **Idea**
+
+Check each element one by one until you find the target.
+
+### **JavaScript Implementation**
+
+```js
+function linearSearch(arr, target) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === target) return i;
+  }
+  return -1;
+}
+```
+
+### **Complexity**
+
+* ⏱ **Time:** O(n)
+* 💾 **Space:** O(1)
+
+<Callout type="warning">
+Perfect for *unsorted* arrays, but slow when data is huge.
+</Callout>
+
+---
+
+## ⚡ 3. Better Approach — Binary Search
+
+Binary Search uses the **divide and conquer** technique.
+Instead of checking every element, it eliminates half the array in each step.
+
+### **Working Principle**
+
+1. Find the **middle** element
+2. If it's equal to the target → return index
+3. If target < mid → search the **left half**
+4. If target > mid → search the **right half**
+5. Repeat until left > right
+
+---
+
+## 🧠 4. Binary Search Code
+
+### **JavaScript Implementation**
+
+```js
+function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+
+    if (arr[mid] === target) return mid;
+    if (target < arr[mid]) right = mid - 1;
+    else left = mid + 1;
+  }
+
+  return -1;
+}
+```
+
+### **Python Implementation**
+
+```python
+def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
+    
+    while left <= right:
+        mid = (left + right) // 2
+
+        if arr[mid] == target:
+            return mid
+        elif target < arr[mid]:
+            right = mid - 1
+        else:
+            left = mid + 1
+
+    return -1
+```
+
+---
+
+## 🔍 5. Example Walkthrough
+
+Let’s search `9` in:
+
+```
+[2, 4, 7, 9, 13, 21]
+```
+
+Steps:
+
+1. Middle = 7 → target is greater → go right
+2. New middle = 9 → match found
+
+<Callout type="success">
+Binary search finds it in **2 steps** instead of a full scan.
+</Callout>
+
+---
+
+## 🌍 6. Real-World Use Cases
+
+### **🛒 1. E-commerce Search**
+
+Large sorted product catalogs use binary search to quickly locate items.
+
+### **📚 2. Dictionaries & Spell Check**
+
+Words are stored in sorted order → binary search for fast lookup.
+
+### **📈 3. Stock Market Data**
+
+Searching timestamps in sorted historical data.
+
+### **🖥️ 4. Operating Systems**
+
+Process scheduling tables & memory page tables use binary search.
+
+### **🎮 5. Video Games**
+
+Collision frames or sorted event lists for fast calculations.
+
+---
+
+## 📊 7. Time & Space Complexity
+
+| Approach      | Time Complexity | Space Complexity |
+| ------------- | --------------- | ---------------- |
+| Linear Search | O(n)            | O(1)             |
+| Binary Search | O(log n)        | O(1)             |
+
+<Callout type="info">
+Binary Search is **exponentially faster** than brute force for large datasets.
+</Callout>
+
+---
+
+## 🏁 8. Final Summary
+
+* Use **linear search** when the array is *unsorted*
+* Use **binary search** when the array is *sorted*
+* Binary search is incredibly fast and used across many real-world systems
+
+---
