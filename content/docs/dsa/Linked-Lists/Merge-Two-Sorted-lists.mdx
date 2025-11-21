@@ -1,0 +1,272 @@
+---
+title: "6️⃣Merge Two Sorted Lists"
+description: "Brute force, better approach, optimal pointer-based linked list merging, complexity analysis, and real-world use cases."
+tags:
+  - DSA
+  - Linked Lists
+  - Pointers
+  - Algorithms
+  - Problem Solving
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# 🔗 Merge Two Sorted Lists — Classic Linked List Merge Technique
+
+Merging two sorted linked lists is a foundational DSA problem that teaches you how to work with pointers efficiently.  
+This is also a core part of **merge sort** and appears frequently in coding interviews.
+
+In this article, we cover:
+
+- Brute Force Approach  
+- Better Approach  
+- Optimal Pointer-Based Merge  
+- JavaScript & Python Code  
+- Example Visualization  
+- Real-World Applications  
+- Time & Space Complexity  
+
+---
+
+## 🪜 1. Problem Definition
+
+> **Given two sorted linked lists, merge them into a single sorted linked list and return the head.**
+
+Example:
+
+List A: `1 → 3 → 5`  
+List B: `2 → 4 → 6`  
+
+Output:  
+`1 → 2 → 3 → 4 → 5 → 6`
+
+---
+
+## 🐢 2. Brute Force Approach (Convert to Array → Sort → Convert Back)
+
+### **Idea**
+- Traverse both lists  
+- Push elements into an array  
+- Sort the array  
+- Build a new linked list from sorted values  
+
+### **JavaScript Implementation**
+
+```js
+function mergeBruteForce(l1, l2) {
+  const arr = [];
+  let cur = l1;
+
+  while (cur) {
+    arr.push(cur.val);
+    cur = cur.next;
+  }
+
+  cur = l2;
+  while (cur) {
+    arr.push(cur.val);
+    cur = cur.next;
+  }
+
+  arr.sort((a, b) => a - b);
+
+  // Rebuild linked list
+  let dummy = new ListNode(0);
+  let node = dummy;
+
+  for (let val of arr) {
+    node.next = new ListNode(val);
+    node = node.next;
+  }
+
+  return dummy.next;
+}
+````
+
+### **Complexity**
+
+* ⏱ Time: **O((n + m) log(n + m))**
+* 💾 Space: **O(n + m)**
+
+<Callout type="warning">
+This defeats the purpose of linked lists — too much extra memory.
+</Callout>
+
+---
+
+## ⚡ 3. Better Approach — Recursion
+
+### **Idea**
+
+Choose the smaller of two heads, recurse for the rest.
+
+### **JavaScript Implementation**
+
+```js
+function mergeRecursive(l1, l2) {
+  if (!l1) return l2;
+  if (!l2) return l1;
+
+  if (l1.val < l2.val) {
+    l1.next = mergeRecursive(l1.next, l2);
+    return l1;
+  } else {
+    l2.next = mergeRecursive(l1, l2.next);
+    return l2;
+  }
+}
+```
+
+### **Complexity**
+
+* ⏱ Time: **O(n + m)**
+* 💾 Space: **O(n + m)** (due to recursion call stack)
+
+---
+
+## 🧠 4. Optimal Approach — Iterative Pointer Merge
+
+This is the **best and most memory-efficient approach**, used in merge sort.
+
+### **Idea**
+
+* Maintain two pointers on both lists
+* Pick the smaller node each time
+* Append it to the merged list
+* Advance that pointer
+* Continue until one list finishes
+
+### **Why Optimal?**
+
+* No extra arrays
+* No recursion
+* In-place merging
+
+---
+
+## ✨ Optimal Solution Code
+
+### **JavaScript Implementation**
+
+```js
+function mergeTwoLists(l1, l2) {
+  let dummy = new ListNode(0);
+  let tail = dummy;
+
+  while (l1 && l2) {
+    if (l1.val < l2.val) {
+      tail.next = l1;
+      l1 = l1.next;
+    } else {
+      tail.next = l2;
+      l2 = l2.next;
+    }
+    tail = tail.next;
+  }
+
+  // Attach remaining nodes
+  tail.next = l1 || l2;
+
+  return dummy.next;
+}
+```
+
+### **Python Implementation**
+
+```python
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def merge_two_lists(l1, l2):
+    dummy = ListNode()
+    tail = dummy
+
+    while l1 and l2:
+        if l1.val < l2.val:
+            tail.next = l1
+            l1 = l1.next
+        else:
+            tail.next = l2
+            l2 = l2.next
+        tail = tail.next
+
+    tail.next = l1 or l2
+
+    return dummy.next
+```
+
+---
+
+## 🔍 5. Example Walkthrough
+
+List A:
+`1 → 3 → 5`
+
+List B:
+`2 → 4 → 6`
+
+Steps:
+
+1. Compare 1 & 2 → take 1
+2. Compare 3 & 2 → take 2
+3. Compare 3 & 4 → take 3
+4. Continue…
+
+Final:
+`1 → 2 → 3 → 4 → 5 → 6`
+
+<Callout type="success">
+Merging happens in **strictly linear time** — no sorting needed.
+</Callout>
+
+---
+
+## 🌍 6. Real-World Use Cases
+
+### **🧮 1. Merge Sort Algorithm**
+
+Core step of merging sorted halves.
+
+### **🧾 2. Combining Sorted Logs**
+
+Merging sorted time-stamped events or server logs.
+
+### **📊 3. Database Merge Operations**
+
+Merging sorted query results efficiently.
+
+### **📂 4. File Systems**
+
+File merging & ordered block tracking.
+
+### **📈 5. Streaming Data**
+
+Combine two sorted data streams in real-time.
+
+---
+
+## 📊 7. Time & Space Complexity
+
+| Approach                | Time Complexity   | Space Complexity |
+| ----------------------- | ----------------- | ---------------- |
+| Brute Force             | O((n+m) log(n+m)) | O(n+m)           |
+| Recursive Merge         | O(n+m)            | O(n+m) (stack)   |
+| Iterative Pointer Merge | O(n+m)            | O(1)             |
+
+<Callout type="success">
+Pointer-based merge is the **optimal**, interview-approved solution.
+</Callout>
+
+---
+
+## 🏁 8. Final Summary
+
+* Brute force breaks linked list advantages
+* Recursion is elegant but not memory optimal
+* Iterative pointer merge is **best**
+* Runs in **linear time O(n + m)** with **constant space**
+* Essential for mastering merge sort & linked lists
+
+---

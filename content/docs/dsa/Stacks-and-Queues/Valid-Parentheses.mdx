@@ -1,0 +1,200 @@
+---
+title: "7️⃣Valid Parentheses"
+description: "Learn brute-force, stack-based, and optimized approaches to validate parentheses strings with time and space complexities."
+date: "2025-11-21"
+tags: ["dsa", "javascript", "stack", "interview"]
+---
+
+# ✅ 7. Valid Parentheses — Stack-based Validation
+
+Validating parentheses is a classic stack problem that checks whether every opening bracket has a corresponding closing bracket in the correct order.
+
+It's simple yet frequently asked because it tests your understanding of **stacks**, **mapping**, and **string traversal**.
+
+---
+
+## 🎯 Problem Statement
+
+Given a string containing characters:  
+`'(', ')', '{', '}', '[' ,']'`
+
+Return **true** if it is valid, where:
+
+- Every open bracket must be closed by the same type.  
+- Brackets must close in **correct order**.  
+- Empty string is valid.
+
+---
+
+## 🧠 Example
+
+```txt
+Input: "()[]{}"
+Output: true
+
+Input: "(]"
+Output: false
+
+Input: "([{}])"
+Output: true
+````
+
+---
+
+# 🪜 Approaches
+
+## ❌ 1. Brute Force Approach (Replace pairs until stable)
+
+### **Idea**
+
+Repeatedly remove valid pairs `"()"`, `"{}"`, `"[]"` from the string
+until:
+
+* the string becomes empty → **valid**
+* no further changes happen → **invalid**
+
+### **Code (JavaScript)**
+
+```js
+function isValid(s) {
+  let prev = "";
+  while (prev !== s) {
+    prev = s;
+    s = s.replace("()", "")
+         .replace("{}", "")
+         .replace("[]", "");
+  }
+  return s.length === 0;
+}
+```
+
+### **Time Complexity**
+
+* Worst-case: **O(n²)**
+  (Repeated scanning and replacing)
+
+### **Space Complexity**
+
+* **O(1)** (in-place replacement)
+
+---
+
+## 🚀 2. Optimal Stack Approach (Most efficient)
+
+### **Idea**
+
+Use a stack to push opening brackets.
+For every closing bracket, check if it matches the last opened one.
+
+### **Steps**
+
+1. Create a map of closing → opening:
+
+   ```js
+   const map = { ')': '(', '}': '{', ']': '[' };
+   ```
+2. Traverse string:
+
+   * If opening → push to stack
+   * If closing → check top of stack
+3. In the end, stack must be empty
+
+### **Code (JavaScript)**
+
+```js
+function isValid(s) {
+  const stack = [];
+  const map = { ")": "(", "}": "{", "]": "[" };
+
+  for (let ch of s) {
+    if (ch in map) {
+      if (stack.pop() !== map[ch]) return false;
+    } else {
+      stack.push(ch);
+    }
+  }
+
+  return stack.length === 0;
+}
+```
+
+### **Time Complexity**
+
+* **O(n)** — scan once
+
+### **Space Complexity**
+
+* **O(n)** — stack in worst case
+
+---
+
+## 🏆 3. Ultra-Optimized Attempt (Not practical but interview-worthy)
+
+There is **no way to reduce below O(n)**
+because:
+
+* every character must be checked at least once.
+
+But we can reduce map lookups by pre-grouping:
+
+```js
+function isValid(s) {
+  const stack = [];
+  for (let ch of s) {
+    if (ch === "(") stack.push(")");
+    else if (ch === "{") stack.push("}");
+    else if (ch === "[") stack.push("]");
+    else if (stack.pop() !== ch) return false;
+  }
+  return stack.length === 0;
+}
+```
+
+### Advantage
+
+* No need for map lookup
+* Slightly faster in practice
+
+---
+
+# 🌍 Real-World Use Cases
+
+### ✔ Compilers & Interpreters
+
+* Validates nested structures in code (`if`, `for`, `{ }`)
+
+### ✔ Expression Evaluation
+
+* Ensures mathematical expressions are well-formed
+
+### ✔ HTML/XML Validators
+
+* Helps ensure structural correctness
+
+### ✔ Parsing JSON & Data Formats
+
+* Ensures syntax validity before processing
+
+---
+
+# 📌 Summary
+
+| Approach        | Time  | Space | Notes                    |
+| --------------- | ----- | ----- | ------------------------ |
+| Brute Force     | O(n²) | O(1)  | Easy but slow            |
+| Stack Approach  | O(n)  | O(n)  | Best & most common       |
+| Optimized Stack | O(n)  | O(n)  | Slight performance boost |
+
+---
+
+## 🧩 Final Thoughts
+
+This is one of the most important stack problems.
+Mastering it helps unlock others like:
+
+* **Min Stack**
+* **Evaluate RPN**
+* **Decode Strings**
+* **Next Greater Element**
+
+---

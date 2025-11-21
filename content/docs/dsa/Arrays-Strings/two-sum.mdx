@@ -1,56 +1,116 @@
 ---
-title: "Two Sum"
-description: "Solve the Two Sum problem using Hash Map approach with step-by-step explanation and clean code."
-date: "2025-10-30"
-tags: ["Arrays", "Hash Map", "LeetCode"]
+title: "1️⃣Two Sum"
+description: "Detailed brute force and optimal hashing-based solutions for the Two Sum problem with time/space complexities and real-world use cases."
+date: "2025-11-21"
+tags: ["dsa", "arrays", "hashmap", "interview", "javascript"]
 ---
 
-# 🧮 Two Sum 
+# 🎯 1. Two Sum — Hashing to Find Pair in an Array
 
-The **Two Sum** problem is one of the most popular algorithm questions.  
-We are given an array of integers and a target number. We need to find two numbers that add up to the target and return their indices.
+Two Sum is one of the most famous DSA problems.  
+It tests your understanding of:
+
+- Hashing  
+- Complement logic  
+- Time optimization  
+- Array traversal  
+
+This problem appears in almost every **FAANG** coding interview.
 
 ---
 
-## 🧠 Problem Statement
+# 🧩 Problem Statement
 
 Given an array of integers `nums` and an integer `target`,  
-return *indices of the two numbers such that they add up to `target`*.
+return the **indices** of the two numbers such that:
 
-You may assume that each input would have exactly one solution,  
-and you may not use the same element twice.
+```
 
+nums[i] + nums[j] = target
 
-### Example
-
-```text
-Input: nums = [2, 7, 11, 15], target = 9  
-Output: [0, 1]
 ````
 
-Explanation:
-Because `nums[0] + nums[1] = 2 + 7 = 9`
+You may assume:
+
+- Exactly one solution exists  
+- Same element cannot be used twice  
 
 ---
 
-## ⚙️ Approach — Hash Map
+## 🧠 Example
 
-We can solve this efficiently using a **Hash Map**.
+### Input:
+```txt
+nums = [2, 7, 11, 15]
+target = 9
+````
 
-1. Loop through the array.
-2. For each number, check if the complement (`target - num`) exists in the map.
-3. If it exists, return both indices.
-4. If not, store the number and its index in the map.
+### Output:
 
-This gives us **O(n)** time complexity and **O(n)** space.
+```txt
+[0, 1]
+```
+
+Because `2 + 7 = 9`.
 
 ---
 
-## 💻 Code (JavaScript)
+# 🪜 Approaches
 
-```javascript
+## ❌ 1. Brute Force Approach (Double Loop)
+
+### **Idea**
+
+Check every pair using two nested loops and return the first one that sums to the target.
+
+### **Code (JavaScript)**
+
+```js
 function twoSum(nums, target) {
-  const map = new Map();
+  for (let i = 0; i < nums.length; i++) {
+    for (let j = i + 1; j < nums.length; j++) {
+      if (nums[i] + nums[j] === target) {
+        return [i, j];
+      }
+    }
+  }
+}
+```
+
+### **Complexity**
+
+| Metric | Value     |
+| ------ | --------- |
+| Time   | **O(n²)** |
+| Space  | **O(1)**  |
+
+Simple but inefficient for large inputs.
+
+---
+
+## 🚀 2. Optimal Approach — HashMap (One-Pass Hashing)
+
+This is the most efficient and most commonly expected solution.
+
+### **Idea**
+
+Use a hash map:
+
+* For each number:
+
+  * Compute its **complement**: `target - nums[i]`
+  * If complement exists in map → we found the answer
+  * Otherwise, store the current number and its index
+
+This ensures every element is processed **only once**.
+
+---
+
+## 🧑‍💻 Code (JavaScript Optimal)
+
+```js
+function twoSum(nums, target) {
+  const map = new Map(); // number → index
 
   for (let i = 0; i < nums.length; i++) {
     const complement = target - nums[i];
@@ -66,39 +126,68 @@ function twoSum(nums, target) {
 
 ---
 
+# 🧮 Complexity
 
-## 🧾 Example Walkthrough
-
-For `nums = [2, 7, 11, 15]`, `target = 9`
-
-| Step | i | nums[i] | complement | map before | Result |
-| ---- | - | ------- | ---------- | ----------- | ------- |
-| 1 | 0 | 2 | 7 | \{\} | store (2 → 0) |
-| 2 | 1 | 7 | 2 | \{2 → 0\} | found complement → return [0,1] |
+| Operation               | Time     | Space |
+| ----------------------- | -------- | ----- |
+| HashMap lookup + insert | **O(1)** | O(n)  |
+| Total                   | **O(n)** | O(n)  |
 
 ---
 
+# 🔍 Why Hashing Works
 
-## 🧩 Output
+HashMap gives **instant lookup** (constant time).
+Instead of searching for complement in the entire array, we check the map in **O(1)**.
 
-```text
-[0, 1]
-```
-
----
-
-## ⏱️ Complexity
-
-* **Time Complexity:** O(n)
-* **Space Complexity:** O(n)
+Brings time from **O(n²) → O(n)**.
 
 ---
 
-## ✅ Summary
+# 🌍 Real-World Use Cases
 
-* Use a Hash Map to track seen numbers.
-* Check for complement before inserting.
-* Efficient and clean — perfect for interviews.
+### ✔ Fraud Detection
+
+Detect if two transactions sum up to a flagged amount.
+
+### ✔ E-commerce Discounts
+
+Find two product prices that match a gift card balance.
+
+### ✔ Finance
+
+Pairing stock values, sums in portfolio balancing.
+
+### ✔ Logistics
+
+Load distribution: two packages matching weight target.
+
+### ✔ Gaming
+
+Matching two attack/defense values to reach a target result.
 
 ---
 
+# 📌 Summary Table
+
+| Approach          | Time  | Space | Notes                       |
+| ----------------- | ----- | ----- | --------------------------- |
+| Brute Force       | O(n²) | O(1)  | Easy but slow               |
+| Hashing (Optimal) | O(n)  | O(n)  | ⭐ Most efficient & expected |
+
+---
+
+# 🧩 Final Thoughts
+
+Two Sum teaches:
+
+* HashMap fundamentals
+* Complement-based logic
+* Real-world lookup optimization
+* Sets you up for similar problems:
+
+  * 3 Sum
+  * Subarray Sum
+  * Pair with Given Difference
+
+---

@@ -1,0 +1,212 @@
+---
+title: "🔟Level Order Traversal (BFS)"
+description: "Detailed guide on level order traversal using brute force and optimal BFS queue method with examples, use cases, and complexities."
+date: "2025-11-21"
+tags: ["dsa", "trees", "bfs", "binary-tree", "javascript", "interview"]
+---
+
+# 🌳 10. Level Order Traversal (BFS) — Breadth-First Tree Traversal
+
+Level Order Traversal is one of the most fundamental binary tree problems.  
+It processes nodes **level by level** from top to bottom using **Breadth-First Search (BFS)**.
+
+This question checks your understanding of:
+
+- BFS  
+- Queues  
+- Tree traversal patterns  
+
+---
+
+# 🎯 Problem Statement
+
+Given the root of a binary tree, return the **level-by-level traversal** as a 2D array.
+
+---
+
+## 🧠 Example
+
+### Input Tree
+```
+
+```
+  1
+ / \
+2   3
+```
+
+/ \   
+4   5   6
+
+````
+
+### Output
+```txt
+[
+  [1],
+  [2, 3],
+  [4, 5, 6]
+]
+````
+
+---
+
+# 🪜 Approaches
+
+## ❌ 1. Brute Force (DFS + Height Calculation)
+
+### **Idea**
+
+1. Compute the height of the tree → O(n)
+2. For each level (0 to height-1), use DFS to collect nodes → O(n)
+3. Total = **O(n²)** in worst case
+
+### **Code (JavaScript)**
+
+```js
+function height(root) {
+  if (!root) return 0;
+  return 1 + Math.max(height(root.left), height(root.right));
+}
+
+function getLevel(root, level, arr) {
+  if (!root) return;
+  if (level === 1) {
+    arr.push(root.val);
+  } else {
+    getLevel(root.left, level - 1, arr);
+    getLevel(root.right, level - 1, arr);
+  }
+}
+
+function levelOrder(root) {
+  const h = height(root);
+  const result = [];
+
+  for (let i = 1; i <= h; i++) {
+    const level = [];
+    getLevel(root, i, level);
+    result.push(level);
+  }
+
+  return result;
+}
+```
+
+### Complexity
+
+| Metric | Value                           |
+| ------ | ------------------------------- |
+| Time   | **O(n²)**                       |
+| Space  | **O(n)** (recursive call stack) |
+
+---
+
+## 🚀 2. Optimal BFS Approach (Using Queue)
+
+This is the classic and most efficient technique.
+
+### **Idea**
+
+* Use a queue
+* Push root → pop → process → push children
+* For each level, process all nodes currently in queue
+
+### Steps
+
+1. Initialize queue with `root`
+2. While queue not empty:
+
+   * Determine level size
+   * Pop that many nodes
+   * Push their children
+3. Add each level to result
+
+---
+
+## 🧑‍💻 Code (JavaScript Optimal)
+
+```js
+function levelOrder(root) {
+  if (!root) return [];
+
+  const result = [];
+  const queue = [root];
+
+  while (queue.length > 0) {
+    const size = queue.length;
+    const level = [];
+
+    for (let i = 0; i < size; i++) {
+      const node = queue.shift();
+      level.push(node.val);
+
+      if (node.left) queue.push(node.left);
+      if (node.right) queue.push(node.right);
+    }
+
+    result.push(level);
+  }
+
+  return result;
+}
+```
+
+---
+
+# 🧮 Complexity
+
+| Operation       | Time     | Space        |
+| --------------- | -------- | ------------ |
+| BFS Level Order | **O(n)** | O(n) (queue) |
+
+Efficient because each node is processed exactly once.
+
+---
+
+# 🌍 Real-World Use Cases
+
+### ✔ Shortest Path in Unweighted Graphs
+
+BFS is used to find minimum steps between nodes.
+
+### ✔ Social Network Friend Suggestions
+
+Finding users closest to you (level by level).
+
+### ✔ AI Search & Pathfinding
+
+Used in algorithms like Bidirectional Search.
+
+### ✔ Serialization & Deserialization
+
+Binary tree level order representation is heavily used.
+
+### ✔ Network Packet Broadcasting
+
+Simulates BFS on routers & switches.
+
+---
+
+# 📌 Summary Table
+
+| Approach              | Time  | Space | Notes                      |
+| --------------------- | ----- | ----- | -------------------------- |
+| DFS-based brute force | O(n²) | O(n)  | Very slow for skewed trees |
+| BFS with Queue        | O(n)  | O(n)  | ⭐ Fastest and most used    |
+
+---
+
+# 🧩 Final Thoughts
+
+Level Order Traversal is the **foundation** for many advanced problems:
+
+* Zigzag traversal
+* Reverse level order
+* Connect level pointers
+* BFS shortest path
+* Tree serialization
+
+Understanding this unlocks higher-level tree + graph concepts.
+
+---

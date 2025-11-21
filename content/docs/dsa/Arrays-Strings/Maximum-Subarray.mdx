@@ -1,0 +1,235 @@
+---
+title: "5️⃣Maximum Subarray (Kadane’s Algorithm) — Max Sum in an Array"
+description: "Brute force, better approach, Kadane’s optimal algorithm, complexity analysis, real-world use cases, and JS/Python code examples."
+tags:
+  - DSA
+  - Arrays
+  - Kadane's Algorithm
+  - Dynamic Programming
+  - Problem Solving
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# 💥 Maximum Subarray — Kadane’s Algorithm
+
+The **Maximum Subarray Problem** asks you to find the **largest sum of any contiguous subarray** in a given array.  
+Kadane’s Algorithm solves it in **O(n)** time and is one of the most famous dynamic programming techniques.
+
+This article covers:
+
+- Brute Force  
+- Better Approach  
+- Optimal Kadane’s Algorithm  
+- JavaScript + Python Code  
+- Example Walkthrough  
+- Real-World Use Cases  
+- Time & Space Complexity  
+
+---
+
+## 🪜 1. Problem Definition
+
+> **Given an integer array, find the contiguous subarray with the largest sum. Return the maximum sum.**
+
+Example:
+
+```js
+Input: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+Output: 6   // subarray: [4, -1, 2, 1]
+````
+
+---
+
+## 🐢 2. Brute Force Approach (Check All Subarrays)
+
+### **Idea**
+
+Try every possible subarray and compute its sum.
+
+### **JavaScript Implementation**
+
+```js
+function maxSubarrayBrute(arr) {
+  let maxSum = -Infinity;
+
+  for (let i = 0; i < arr.length; i++) {
+    let currentSum = 0;
+    for (let j = i; j < arr.length; j++) {
+      currentSum += arr[j];
+      maxSum = Math.max(maxSum, currentSum);
+    }
+  }
+
+  return maxSum;
+}
+```
+
+### **Complexity**
+
+* ⏱ Time: **O(n²)**
+* 💾 Space: **O(1)**
+
+<Callout type="warning">
+Works but extremely slow for large arrays.
+</Callout>
+
+---
+
+## ⚡ 3. Better Approach — Prefix Sum (Still Not Optimal)
+
+### **Idea**
+
+* Compute prefix sums
+* Max subarray = `prefix[j] - prefix[i]`
+* Still needs nested loops → not ideal
+
+### **JavaScript Implementation**
+
+```js
+function maxSubarrayPrefix(arr) {
+  const prefix = [0];
+  for (let i = 0; i < arr.length; i++) prefix.push(prefix[i] + arr[i]);
+
+  let maxSum = -Infinity;
+
+  for (let i = 0; i < prefix.length; i++) {
+    for (let j = i + 1; j < prefix.length; j++) {
+      maxSum = Math.max(maxSum, prefix[j] - prefix[i]);
+    }
+  }
+
+  return maxSum;
+}
+```
+
+### **Complexity**
+
+* ⏱ Time: **O(n²)**
+* 💾 Space: **O(n)**
+
+---
+
+## 🧠 4. Optimal Approach — Kadane’s Algorithm (O(n))
+
+Kadane’s Algorithm is based on a powerful idea:
+
+> **At each index, decide whether to continue the current subarray or start a new one.**
+
+### **Core Logic**
+
+For each element:
+
+* `currentSum = max(arr[i], currentSum + arr[i])`
+* `maxSum = max(maxSum, currentSum)`
+
+### Why it works?
+
+* Negative sums reset the subarray
+* Always track the highest sum seen so far
+
+---
+
+## ✨ Kadane’s Algorithm Code
+
+### **JavaScript Implementation**
+
+```js
+function maxSubArrayKadane(arr) {
+  let currentSum = arr[0];
+  let maxSum = arr[0];
+
+  for (let i = 1; i < arr.length; i++) {
+    currentSum = Math.max(arr[i], currentSum + arr[i]);
+    maxSum = Math.max(maxSum, currentSum);
+  }
+
+  return maxSum;
+}
+```
+
+### **Python Implementation**
+
+```python
+def max_subarray_kadane(arr):
+    current_sum = arr[0]
+    max_sum = arr[0]
+
+    for num in arr[1:]:
+        current_sum = max(num, current_sum + num)
+        max_sum = max(max_sum, current_sum)
+
+    return max_sum
+```
+
+---
+
+## 🔍 5. Example Walkthrough
+
+Input:
+
+```
+[-2, 1, -3, 4, -1, 2, 1, -5, 4]
+```
+
+Steps of `currentSum`:
+
+```
+-2 → 1 → -2 → 4 → 3 → 5 → 6 → 1 → 5
+```
+
+Max value = **6**
+
+<Callout type="success">
+Kadane’s Algorithm solves the problem in a single pass.
+</Callout>
+
+---
+
+## 🌍 6. Real-World Use Cases
+
+### **📈 1. Stock Market Analysis**
+
+Finding periods of maximum profit growth.
+
+### **✨ 2. Sensor Data / IoT Analytics**
+
+Detecting most active activity streaks.
+
+### **🎮 3. Game Development**
+
+Finding longest scoring streak or momentum sequences.
+
+### **🧠 4. Machine Learning**
+
+Feature extraction from time series sequences.
+
+### **💻 5. Performance Monitoring**
+
+Detecting peak CPU or network usage intervals.
+
+---
+
+## 📊 7. Time & Space Complexity
+
+| Approach           | Time Complexity | Space Complexity |
+| ------------------ | --------------- | ---------------- |
+| Brute Force        | O(n²)           | O(1)             |
+| Prefix Sum         | O(n²)           | O(n)             |
+| Kadane’s Algorithm | O(n)            | O(1)             |
+
+<Callout type="success">
+Kadane’s Algorithm is the **optimal** and most widely used solution.
+</Callout>
+
+---
+
+## 🏁 8. Final Summary
+
+* Brute force generates all subarrays → too slow
+* Prefix-sum is better but still quadratic
+* Kadane’s Algorithm gives **O(n)** performance
+* Works for any integer array
+* Widely applied in financial and time-series applications
+
+---

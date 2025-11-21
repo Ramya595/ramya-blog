@@ -1,54 +1,36 @@
 ---
-title: "Binary Search — Efficient Searching in Sorted Arrays"
-description: "Learn brute force, optimized binary search, complexity, real-world use cases, and implementation examples."
-tags:
-  - DSA
-  - Binary Search
-  - Algorithms
-  - Problem Solving
+title: "2️⃣ Binary Search"
+description: "Brute Force, Better Approach, and Optimal Approach for Binary Search with examples, code, time/space complexity."
 ---
 
-import { Callout } from "fumadocs-ui/components/callout";
+import { Steps } from "fumadocs-ui";
 
-# 🔎 Binary Search — Efficient Searching in Sorted Arrays
+# 2️⃣ Binary Search — Efficient Searching in Sorted Arrays
 
-Binary Search is one of the most fundamental algorithms in computer science.  
-It helps you **search an element in a sorted array in O(log n)** time — making it extremely efficient for large datasets.
+Searching is one of the most common operations in computing.  
+When your data is **sorted**, Binary Search gives you an ultra-fast way to find elements in **O(log n)** time.
 
-This article covers:
-
-- Brute Force Approach  
-- Why Binary Search is Better  
-- Step-by-step Explanation  
-- JavaScript & Python Code  
-- Real-World Use Cases  
-- Time & Space Complexity  
+This article walks through **Brute Force → Better → Optimal** approaches with explanations, real-world examples, and code.
 
 ---
 
-## 🪜 1. Problem Definition
-
-> **Given a sorted array and a target value, determine if the value exists in the array and return its index (or -1 if not found).**
-
-Example:
-
-```js
-Input: arr = [2, 4, 7, 9, 13, 21], target = 9
-Output: 3
-````
+## 🚀 Problem Statement
+Given a **sorted array** and a **target value**, find the index of the target.  
+If not found, return `-1`.
 
 ---
 
-## 🐢 2. Brute Force Approach (Linear Search)
+# 🧠 Approaches
 
-The simplest way is to scan every element from left to right.
+## 1️⃣ Brute Force Approach
+The simplest way — check every element one by one.
 
 ### **Idea**
+- Start from index `0`  
+- Compare each element with the target  
+- Stop when found
 
-Check each element one by one until you find the target.
-
-### **JavaScript Implementation**
-
+### **Code**
 ```js
 function linearSearch(arr, target) {
   for (let i = 0; i < arr.length; i++) {
@@ -56,37 +38,72 @@ function linearSearch(arr, target) {
   }
   return -1;
 }
+````
+
+### **Time Complexity:**
+
+* ⏱️ `O(n)` — checks each element
+
+### **Space Complexity:**
+
+* 📦 `O(1)` — no extra memory
+
+### **Real-world example**
+
+* Searching your name in an **unsorted** attendance list
+* Scanning every product on a supermarket shelf
+
+---
+
+## 2️⃣ Better Approach (Using Built-in Methods)
+
+Modern languages have optimized search routines.
+
+### **Idea**
+
+Use built-in search functions (like `indexOf`) that are internally optimized.
+
+### **Code**
+
+```js
+function betterSearch(arr, target) {
+  return arr.indexOf(target);
+}
 ```
 
-### **Complexity**
+### **Time Complexity:**
 
-* ⏱ **Time:** O(n)
-* 💾 **Space:** O(1)
+* ⏱️ `O(n)` (but usually slightly optimized internally)
 
-<Callout type="warning">
-Perfect for *unsorted* arrays, but slow when data is huge.
-</Callout>
+### **Space Complexity:**
 
----
+* 📦 `O(1)`
 
-## ⚡ 3. Better Approach — Binary Search
+### **Real-world example**
 
-Binary Search uses the **divide and conquer** technique.
-Instead of checking every element, it eliminates half the array in each step.
+* Searching a song name in your **offline playlist**, where the app sequentially checks entries
+* Searching for a keyword inside a text file
 
-### **Working Principle**
-
-1. Find the **middle** element
-2. If it's equal to the target → return index
-3. If target < mid → search the **left half**
-4. If target > mid → search the **right half**
-5. Repeat until left > right
+> ⚠️ This approach is not optimal for sorted arrays, but it's simpler and slightly better than manual loops.
 
 ---
 
-## 🧠 4. Binary Search Code
+## 3️⃣ Optimal Approach — Binary Search 🔥
 
-### **JavaScript Implementation**
+### **Idea**
+
+Instead of searching the whole array, repeatedly divide the array in half.
+
+### **Steps**
+
+<Steps>
+  <Steps.Step>Check the middle element</Steps.Step>
+  <Steps.Step>If target is smaller → search left half</Steps.Step>
+  <Steps.Step>If target is larger → search right half</Steps.Step>
+  <Steps.Step>Repeat until found or range becomes empty</Steps.Step>
+</Steps>
+
+### **Code**
 
 ```js
 function binarySearch(arr, target) {
@@ -95,97 +112,46 @@ function binarySearch(arr, target) {
 
   while (left <= right) {
     const mid = Math.floor((left + right) / 2);
-
     if (arr[mid] === target) return mid;
-    if (target < arr[mid]) right = mid - 1;
-    else left = mid + 1;
-  }
 
+    if (target < arr[mid]) {
+      right = mid - 1;
+    } else {
+      left = mid + 1;
+    }
+  }
   return -1;
 }
 ```
 
-### **Python Implementation**
+### **Time Complexity:**
 
-```python
-def binary_search(arr, target):
-    left, right = 0, len(arr) - 1
-    
-    while left <= right:
-        mid = (left + right) // 2
+* ⏱️ `O(log n)` — divides data in half every step
 
-        if arr[mid] == target:
-            return mid
-        elif target < arr[mid]:
-            right = mid - 1
-        else:
-            left = mid + 1
+### **Space Complexity:**
 
-    return -1
-```
+* 📦 `O(1)` — iterative approach
+  *(Recursive version costs O(log n) space)*
+
+### **Real-world examples**
+
+* Searching a word in a physical **dictionary**
+* “Guess the Number” game using **higher/lower** logic
+* Looking up entries in **phone books**, **database indexes**, **binary search trees**
 
 ---
 
-## 🔍 5. Example Walkthrough
+# 📌 Summary Table
 
-Let’s search `9` in:
-
-```
-[2, 4, 7, 9, 13, 21]
-```
-
-Steps:
-
-1. Middle = 7 → target is greater → go right
-2. New middle = 9 → match found
-
-<Callout type="success">
-Binary search finds it in **2 steps** instead of a full scan.
-</Callout>
+| Approach    | Description        | Time         | Space |
+| ----------- | ------------------ | ------------ | ----- |
+| Brute Force | Check all elements | O(n)         | O(1)  |
+| Better      | Built-in search    | O(n)         | O(1)  |
+| Optimal     | Binary Search      | **O(log n)** | O(1)  |
 
 ---
 
-## 🌍 6. Real-World Use Cases
+# 🧩 Final Thoughts
 
-### **🛒 1. E-commerce Search**
-
-Large sorted product catalogs use binary search to quickly locate items.
-
-### **📚 2. Dictionaries & Spell Check**
-
-Words are stored in sorted order → binary search for fast lookup.
-
-### **📈 3. Stock Market Data**
-
-Searching timestamps in sorted historical data.
-
-### **🖥️ 4. Operating Systems**
-
-Process scheduling tables & memory page tables use binary search.
-
-### **🎮 5. Video Games**
-
-Collision frames or sorted event lists for fast calculations.
-
----
-
-## 📊 7. Time & Space Complexity
-
-| Approach      | Time Complexity | Space Complexity |
-| ------------- | --------------- | ---------------- |
-| Linear Search | O(n)            | O(1)             |
-| Binary Search | O(log n)        | O(1)             |
-
-<Callout type="info">
-Binary Search is **exponentially faster** than brute force for large datasets.
-</Callout>
-
----
-
-## 🏁 8. Final Summary
-
-* Use **linear search** when the array is *unsorted*
-* Use **binary search** when the array is *sorted*
-* Binary search is incredibly fast and used across many real-world systems
-
----
+Binary Search is a fundamental algorithm every developer must master.
+It's faster, cleaner, and extremely powerful when working with **sorted data**.

@@ -1,0 +1,265 @@
+---
+title: "8️⃣LRU Cache"
+description: "A deep dive into the LRU Cache design with brute force, optimal approach, real-world use cases, and complexities."
+date: "2025-11-21"
+tags: ["dsa", "javascript", "lru-cache", "system-design", "linked-list", "hashmap"]
+---
+
+# 🚀 8. LRU Cache — Cache Design using HashMap + Doubly Linked List
+
+The **LRU (Least Recently Used) Cache** is one of the most important interview questions because it combines **data structures + system design** concepts.  
+The goal is to design a cache that performs:
+
+- `get()` in **O(1)**
+- `put()` in **O(1)**  
+- Automatically evicts the **least recently used** item when full
+
+---
+
+# 🎯 Problem Statement
+
+Design a data structure implementing:
+
+```txt
+get(key)    → return value or -1 (if not found)
+put(key, value) → insert/update value, evict LRU if capacity full
+````
+
+Cache must track usage order— **most recently used → front**, **least recently used → back**.
+
+---
+
+# 🧠 Example
+
+```txt
+Input:
+LRUCache cache = new LRUCache(2);
+cache.put(1, 10);
+cache.put(2, 20);
+cache.get(1);     // returns 10 → 1 becomes most recently used
+cache.put(3, 30); // evicts key 2
+cache.get(2);     // returns -1 (not found)
+```
+
+---
+
+# 🪜 Approaches
+
+## ❌ 1. Brute Force Approach (Using Array + Search)
+
+### **Idea**
+
+Use an array to store key-value pairs in order of usage.
+Whenever we `get()` or `put()`, we:
+
+* Search for the key → O(n)
+* Move it to front → O(n)
+* If full, remove last element → O(1)
+
+### **Code (JavaScript)**
+
+```js
+class LRUCache {
+  constructor(capacity) {
+    this.capacity = capacity;
+    this.cache = []; // array of {key, value}
+  }
+
+  get(key) {
+    for (let i = 0; i < this.cache.length; i++) {
+      if (this.cache[i].key === key) {
+        const item = this.cache.splice(i, 1)[0];
+        this.cache.unshift(item);
+        return item.value;
+      }
+    }
+    return -1;
+  }
+
+  put(key, value) {
+    for (let i = 0; i < this.cache.length; i++) {
+      if (this.cache[i].key === key) {
+        this.cache.splice(i, 1);
+        break;
+      }
+    }
+
+    this.cache.unshift({ key, value });
+
+    if (this.cache.length > this.capacity) {
+      this.cache.pop();
+    }
+  }
+}
+```
+
+### Complexity
+
+* **Time:** O(n) for both get and put
+* **Space:** O(n)
+
+Not acceptable for large-scale or interview optimal solutions.
+
+---
+
+## 🚀 2. Optimal Approach (HashMap + Doubly Linked List)
+
+This is the **industry and interview standard**.
+
+### Why?
+
+* **HashMap** → O(1) access to nodes
+* **Doubly Linked List** → O(1) insertion + deletion
+* Maintain MRU at head, LRU at tail
+
+### Architecture Diagram
+
+```
+HashMap: key → node reference
+
+Doubly Linked List:
+HEAD <--> node1 <--> node2 <--> ... <--> nodeN <--> TAIL
+(Most recently used)                   (Least recently used)
+```
+
+---
+
+# 🧩 Key Operations
+
+### ✔ Move a node to Head (MRU)
+
+When accessed or updated.
+
+### ✔ Insert at Head
+
+New entries always become MRU.
+
+### ✔ Remove Tail (LRU)
+
+If capacity exceeds.
+
+---
+
+# 🧑‍💻 Code (JavaScript Optimal)
+
+```js
+class Node {
+  constructor(key, value) {
+    this.key = key;
+    this.value = value;
+    this.prev = null;
+    this.next = null;
+  }
+}
+
+class LRUCache {
+  constructor(capacity) {
+    this.capacity = capacity;
+    this.map = new Map();
+    this.head = new Node(null, null);
+    this.tail = new Node(null, null);
+    this.head.next = this.tail;
+    this.tail.prev = this.head;
+  }
+
+  _remove(node) {
+    node.prev.next = node.next;
+    node.next.prev = node.prev;
+  }
+
+  _addToHead(node) {
+    node.next = this.head.next;
+    node.prev = this.head;
+    this.head.next.prev = node;
+    this.head.next = node;
+  }
+
+  get(key) {
+    if (!this.map.has(key)) return -1;
+
+    const node = this.map.get(key);
+    this._remove(node);
+    this._addToHead(node);
+    return node.value;
+  }
+
+  put(key, value) {
+    if (this.map.has(key)) {
+      const node = this.map.get(key);
+      node.value = value;
+      this._remove(node);
+      this._addToHead(node);
+      return;
+    }
+
+    if (this.map.size === this.capacity) {
+      const lru = this.tail.prev;
+      this._remove(lru);
+      this.map.delete(lru.key);
+    }
+
+    const newNode = new Node(key, value);
+    this._addToHead(newNode);
+    this.map.set(key, newNode);
+  }
+}
+```
+
+---
+
+# 🧮 Complexity
+
+| Operation | Time     | Space |
+| --------- | -------- | ----- |
+| `get()`   | **O(1)** | O(n)  |
+| `put()`   | **O(1)** | O(n)  |
+
+This meets system design-level performance expectations.
+
+---
+
+# 🌍 Real-World Use Cases
+
+### ✔ Browser caching
+
+Recently visited pages remain cached.
+
+### ✔ Operating systems
+
+Page replacement algorithms use LRU.
+
+### ✔ Redis / Memcached
+
+Uses LRU-like eviction policies.
+
+### ✔ Database systems
+
+Buffer pool management.
+
+### ✔ CDN (Content Delivery Networks)
+
+Evicts least requested content.
+
+---
+
+# 📌 Summary
+
+| Approach      | Time | Space | Notes                         |
+| ------------- | ---- | ----- | ----------------------------- |
+| Brute Force   | O(n) | O(n)  | Slow, impractical             |
+| HashMap + DLL | O(1) | O(n)  | ⚡ Optimal & industry standard |
+
+---
+
+# 🧩 Final Thoughts
+
+LRU Cache teaches you:
+
+* HashMap fundamentals
+* Linked list operations
+* Cache eviction strategies
+* Real-world system design patterns
+
+This problem frequently appears in **FAANG, system design, and senior-level interviews**.
+
+---

@@ -1,0 +1,241 @@
+---
+title: "4️⃣Longest Substring Without Repeating Characters"
+description: "Brute force, optimized sliding window techniques, complexity analysis, real-world applications, and JS/Python code examples."
+tags:
+  - DSA
+  - Strings
+  - Sliding Window
+  - Algorithms
+  - Problem Solving
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+# 🔐 Longest Substring Without Repeating Characters — Sliding Window
+
+This is a classic and extremely common interview problem that tests your mastery of **hashing**, **two pointers**, and the **sliding window pattern**.
+
+You’ll learn:
+
+- Brute Force Approach  
+- Better Approach  
+- Optimal Sliding Window Approach  
+- JavaScript & Python Code  
+- Example Walkthrough  
+- Real-World Use Cases  
+- Time & Space Complexity  
+
+---
+
+## 🪜 1. Problem Definition
+
+> **Given a string `s`, return the length of the longest substring without repeating characters.**
+
+Example:
+
+```js
+Input: "abcabcbb"
+Output: 3  // "abc"
+````
+
+---
+
+## 🐢 2. Brute Force Approach (Generate All Substrings)
+
+### **Idea**
+
+* Generate every possible substring
+* Check if all characters are unique
+* Track max length
+
+### **JavaScript Implementation**
+
+```js
+function longestSubstringBrute(s) {
+  let maxLen = 0;
+
+  for (let i = 0; i < s.length; i++) {
+    let seen = new Set();
+    for (let j = i; j < s.length; j++) {
+      if (seen.has(s[j])) break;
+      seen.add(s[j]);
+      maxLen = Math.max(maxLen, j - i + 1);
+    }
+  }
+
+  return maxLen;
+}
+```
+
+### **Complexity**
+
+* ⏱ Time: **O(n²)**
+* 💾 Space: **O(n)**
+
+<Callout type="warning">
+Very slow for long strings.
+</Callout>
+
+---
+
+## ⚡ 3. Better Approach — Sliding Window (Basic)
+
+### **Idea**
+
+* Expand a window using `right` pointer
+* If a character repeats → shrink window using `left`
+* Maintain a set of unique characters
+
+### **JavaScript Implementation**
+
+```js
+function longestSubstringBetter(s) {
+  let left = 0;
+  let maxLen = 0;
+  let seen = new Set();
+
+  for (let right = 0; right < s.length; right++) {
+    while (seen.has(s[right])) {
+      seen.delete(s[left]);
+      left++;
+    }
+    seen.add(s[right]);
+    maxLen = Math.max(maxLen, right - left + 1);
+  }
+
+  return maxLen;
+}
+```
+
+### **Complexity**
+
+* ⏱ Time: **O(n)**
+* 💾 Space: **O(n)**
+
+---
+
+## 🧠 4. Optimal Approach — Sliding Window + HashMap (Jumping Left Pointer)
+
+This is the **best possible solution**, used in FAANG interviews.
+
+### **Idea**
+
+* Use a map to store the **latest index** of each character
+* Move the `left` pointer directly to `map[char] + 1` when a repeating character appears
+* This removes the need for deletion loops
+
+This reduces unnecessary steps and makes the window movement more efficient.
+
+---
+
+## ✨ Optimal Solution Code
+
+### **JavaScript Implementation**
+
+```js
+function longestSubstringOptimal(s) {
+  let left = 0;
+  let maxLen = 0;
+  let map = {};
+
+  for (let right = 0; right < s.length; right++) {
+    const char = s[right];
+
+    if (map[char] >= left) {
+      left = map[char] + 1;
+    }
+
+    map[char] = right;
+    maxLen = Math.max(maxLen, right - left + 1);
+  }
+
+  return maxLen;
+}
+```
+
+### **Python Implementation**
+
+```python
+def longest_substring_optimal(s):
+    left = 0
+    max_len = 0
+    last_seen = {}
+
+    for right, char in enumerate(s):
+        if char in last_seen and last_seen[char] >= left:
+            left = last_seen[char] + 1
+        
+        last_seen[char] = right
+        max_len = max(max_len, right - left + 1)
+    
+    return max_len
+```
+
+---
+
+## 🔍 5. Example Walkthrough
+
+Given:
+
+```
+s = "abcabcbb"
+```
+
+* Start → "abc" → max = 3
+* Repeat `a` → jump left to index 1
+* Continue sliding
+* Final answer = **3**
+
+<Callout type="success">
+Optimal solution handles repeats in O(1) time due to hashmap.
+</Callout>
+
+---
+
+## 🌍 6. Real-World Use Cases
+
+### **🔑 1. Authentication Systems**
+
+Detect longest unique token segments.
+
+### **🌐 2. Browser URL Parsing**
+
+Track longest unique chunk of characters in URLs.
+
+### **🎵 3. Audio/Video Frame Analysis**
+
+Identify longest duration without repeated patterns.
+
+### **📱 4. Mobile Keyboards**
+
+Predictive text systems detect unique character streaks.
+
+### **🚀 5. Streaming Platforms**
+
+Detect unique viewer activity sequences.
+
+---
+
+## 📊 7. Time & Space Complexity
+
+| Approach                     | Time Complexity | Space Complexity |
+| ---------------------------- | --------------- | ---------------- |
+| Brute Force                  | O(n²)           | O(n)             |
+| Sliding Window (Basic)       | O(n)            | O(n)             |
+| Optimal Sliding Window + Map | O(n)            | O(n)             |
+
+<Callout type="info">
+Optimal approach avoids unnecessary pointer movements → fastest in practice.
+</Callout>
+
+---
+
+## 🏁 8. Final Summary
+
+* Brute force tries all substrings → slow
+* Basic sliding window is good but does extra work
+* Optimal sliding window with hashmap is the **best approach**
+* Works in **linear time O(n)**
+* Widely used in real-world string processing
+
+---

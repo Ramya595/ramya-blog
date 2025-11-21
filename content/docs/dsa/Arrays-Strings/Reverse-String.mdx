@@ -1,0 +1,193 @@
+---
+title: "3️⃣ Reverse a String / Array"
+description: "Brute Force, Better, and Optimal approach for reversing strings/arrays with examples, code, and complexities."
+---
+
+import { Steps } from "fumadocs-ui";
+
+# 3️⃣ Reverse a String / Array — Pointer-based Reversal
+
+Reversing a sequence is a classic DSA problem.  
+Whether you're reversing a **string**, **array**, or **list**, the underlying logic improves your understanding of pointers and indexing.
+
+This article explains all **3 approaches**:  
+**Brute Force → Better → Optimal (Two Pointers)**  
+with examples, complexities, and real-world use cases.
+
+---
+
+## 🚀 Problem Statement
+Given a string or array, return the reversed version.
+
+Example:  
+`"hello"` → `"olleh"`
+
+---
+
+# 🧠 Approaches
+
+---
+
+## 1️⃣ Brute Force Approach (Using an Extra Array or String)
+
+### **Idea**
+- Traverse input from **end → start**
+- Append each character to a new string/array
+
+### **Code (String)**
+```js
+function reverseBrute(str) {
+  let result = "";
+  for (let i = str.length - 1; i >= 0; i--) {
+    result += str[i];
+  }
+  return result;
+}
+````
+
+### **Code (Array)**
+
+```js
+function reverseArrayBrute(arr) {
+  const result = [];
+  for (let i = arr.length - 1; i >= 0; i--) {
+    result.push(arr[i]);
+  }
+  return result;
+}
+```
+
+### **Time Complexity**
+
+⏱️ **O(n)** — iterates through all characters
+
+### **Space Complexity**
+
+📦 **O(n)** — uses extra array/string
+
+### **Real-world Examples**
+
+* Creating a **copy** of data in reversed order
+* Reversing playback order in a primitive media player
+
+---
+
+## 2️⃣ Better Approach (Built-in Methods)
+
+Languages provide optimized reversing methods.
+
+### **Idea**
+
+Use built-in reverse APIs that are internally optimized.
+
+### **Code (Array)**
+
+```js
+function reverseBetter(arr) {
+  return arr.slice().reverse(); // slice() avoids mutating original
+}
+```
+
+### **Code (String)**
+
+```js
+function reverseStringBetter(str) {
+  return str.split("").reverse().join("");
+}
+```
+
+### **Time Complexity**
+
+⏱️ **O(n)**
+
+### **Space Complexity**
+
+📦 **O(n)** — because split + reverse + join create copies
+
+### **Real-world Examples**
+
+* Reversing chat history using internal `.reverse()`
+* Quick UI manipulation using framework helpers
+
+> 🔎 Better, but still not the *best*. Uses extra memory.
+
+---
+
+## 3️⃣ Optimal Approach — Two Pointer Technique (In-place) 🔥
+
+### **Idea**
+
+Swap characters from both ends → move pointers inward.
+
+### **Steps**
+
+<Steps>
+  <Steps.Step>Initialize left = 0, right = length - 1</Steps.Step>
+  <Steps.Step>Swap characters at left and right</Steps.Step>
+  <Steps.Step>Move left++ and right--</Steps.Step>
+  <Steps.Step>Repeat until both pointers meet</Steps.Step>
+</Steps>
+
+### **Code (Array In-Place)**
+
+```js
+function reverseOptimal(arr) {
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left < right) {
+    [arr[left], arr[right]] = [arr[right], arr[left]];
+    left++;
+    right--;
+  }
+  return arr;
+}
+```
+
+### **Code (String → Convert to Array → Reverse In-place)**
+
+```js
+function reverseStringOptimal(str) {
+  const arr = str.split("");
+  let left = 0, right = arr.length - 1;
+
+  while (left < right) {
+    [arr[left], arr[right]] = [arr[right], arr[left]];
+    left++;
+    right--;
+  }
+  return arr.join("");
+}
+```
+
+### **Time Complexity**
+
+⏱️ **O(n)**
+
+### **Space Complexity**
+
+📦 **O(1)** (for arrays)
+📦 **O(n)** for strings (because strings are immutable in JS)
+
+### **Real-world Examples**
+
+* Reversing image pixel arrays for transformations
+* Undoing user actions stored in a stack-like list
+* Flipping data in-place for low-memory embedded systems
+
+---
+
+# 📌 Summary Table
+
+| Approach    | Description              | Time     | Space    |
+| ----------- | ------------------------ | -------- | -------- |
+| Brute Force | New array from end→start | O(n)     | O(n)     |
+| Better      | Built-in reverse         | O(n)     | O(n)     |
+| Optimal     | Two pointers (in-place)  | **O(n)** | **O(1)** |
+
+---
+
+# 🧩 Final Thoughts
+
+Pointer-based reversal is one of the simplest yet most powerful techniques.
+It improves understanding of indexing, mutation, and in-place transformations — core skills for interviews and real-world engineering.
