@@ -1,0 +1,248 @@
+---
+title: "1️⃣7️⃣ DFS Basics (Depth First Search)"
+description: "Complete guide to Depth First Search (DFS) — brute force idea, recursive and stack-based approaches, adjacency list, matrix, real-world applications, time complexity, and space complexity."
+---
+
+#  DFS Basics (Depth First Search)
+
+**Depth First Search (DFS)** is one of the most fundamental graph traversal algorithms.  
+It explores a graph **deeply** — going down one path fully before backtracking.
+
+DFS is used in:
+- Path finding  
+- Detecting cycles  
+- Topological sorting  
+- Connected components  
+- Solving puzzles (mazes, sudoku)  
+- Tree/graph analysis  
+
+---
+
+# 🧠 Real-World Examples
+
+### 🗺️ 1. Maze Solving  
+DFS follows a path until it hits a dead-end → then backtracks.
+
+### 🔐 2. Password Cracking / Brute Force  
+DFS represents trying all possibilities deeply before trying another branch.
+
+### 📂 3. File System Traversal  
+Opening folders recursively (go inside → explore all files → backtrack).
+
+### 📡 4. Social Network Connected Components  
+Find groups of users connected through friendships.
+
+---
+
+# 🧩 Graph Representations
+
+DFS works on graphs represented as:
+
+### **1. Adjacency List** (Most common, optimal)
+```js
+{
+  0: [1, 2],
+  1: [3],
+  2: [4],
+  3: [],
+  4: []
+}
+````
+
+### **2. Adjacency Matrix**
+
+```txt
+0 1 1 0 0  
+1 0 0 1 0  
+1 0 0 0 1
+```
+
+---
+
+# 🐌 Brute Force Idea (Not Efficient)
+
+### Idea
+
+For every node:
+
+* check all edges repeatedly
+* revisit nodes multiple times
+
+This causes:
+
+* **Repeated work**
+* **O(V²)** time for adjacency matrix
+* **Re-exploration of visited nodes**
+
+❌ Not used in interviews.
+
+---
+
+# 🧪 Recursive DFS (Preferred Method)
+
+### 🧩 Idea
+
+Use recursion to go deep first → mark visited → backtrack.
+
+### Code (Adjacency List)
+
+```js
+function dfsRecursive(graph, start) {
+  const visited = new Set();
+
+  function dfs(node) {
+    if (visited.has(node)) return;
+    visited.add(node);
+
+    for (let neighbor of graph[node]) {
+      dfs(neighbor);
+    }
+  }
+
+  dfs(start);
+  return [...visited];
+}
+
+// Example
+const graph = {
+  0: [1, 2],
+  1: [3],
+  2: [4],
+  3: [],
+  4: []
+};
+
+console.log(dfsRecursive(graph, 0)); // [0,1,3,2,4]
+```
+
+✔ Clean and easy
+✔ Best during interviews
+✔ Natural “depth-first” behavior
+
+---
+
+# 📦 DFS Using Stack (Iterative Approach)
+
+Used when recursion depth might exceed limits.
+
+### Code
+
+```js
+function dfsIterative(graph, start) {
+  const visited = new Set();
+  const stack = [start];
+
+  while (stack.length) {
+    const node = stack.pop();
+
+    if (!visited.has(node)) {
+      visited.add(node);
+
+      for (let neighbor of graph[node].reverse()) {
+        stack.push(neighbor);
+      }
+    }
+  }
+
+  return [...visited];
+}
+```
+
+### Why reverse neighbors?
+
+Stack → LIFO → reverse ensures the same order as recursive DFS.
+
+---
+
+# 🌳 DFS on Trees
+
+Since trees have no cycles, you don’t need a visited set.
+
+```js
+function dfsTree(root) {
+  if (!root) return;
+
+  console.log(root.value);
+
+  dfsTree(root.left);
+  dfsTree(root.right);
+}
+```
+
+---
+
+# 🌀 Detecting Cycles Using DFS
+
+DFS helps detect both:
+
+* **Directed cycles**
+* **Undirected cycles**
+
+Example (directed graph):
+
+```js
+function hasCycle(graph) {
+  const visited = new Set();
+  const recursionStack = new Set();
+
+  function dfs(node) {
+    if (recursionStack.has(node)) return true;
+    if (visited.has(node)) return false;
+
+    visited.add(node);
+    recursionStack.add(node);
+
+    for (let neighbor of graph[node]) {
+      if (dfs(neighbor)) return true;
+    }
+
+    recursionStack.delete(node);
+    return false;
+  }
+
+  for (let node in graph) {
+    if (dfs(node)) return true;
+  }
+
+  return false;
+}
+```
+
+---
+
+# 🧩 DFS vs BFS
+
+| Feature         | DFS                                      | BFS            |
+| --------------- | ---------------------------------------- | -------------- |
+| Traversal style | Deep first                               | Level by level |
+| Data structure  | Stack / Recursion                        | Queue          |
+| Best for        | Path existence, topological sort, cycles | Shortest path  |
+| Space           | O(H)                                     | O(W)           |
+| Worst for       | Huge depth/recursion limit               | Huge width     |
+
+---
+
+# ⏱️ Time & Space Complexity
+
+Assume graph with `V` vertices and `E` edges.
+
+### **Adjacency List**
+
+* **Time:** `O(V + E)`
+* **Space:** `O(V)` for visited + recursion stack
+
+### **Adjacency Matrix**
+
+* **Time:** `O(V²)`
+* **Space:** `O(V²)`
+
+---
+
+# 🎯 Interview Tips
+
+* Always use **visited set** to avoid infinite loops.
+* Mention **recursive + iterative versions**.
+* If asked about system-level applications → mention **filesystems, networks, compilers, puzzle solving**.
+* DFS is fundamental for **Topological Sort**, **Cycle Detection**, **Graph Components**.
+
+---

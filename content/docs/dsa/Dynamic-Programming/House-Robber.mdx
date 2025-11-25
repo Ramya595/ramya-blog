@@ -1,0 +1,209 @@
+---
+title: "2️⃣0️⃣ House Robber"
+description: "Brute force, memoization, tabulation, and space-optimized DP approach for the House Robber problem. Includes intuition, real-world analogy, code, and complexity."
+---
+
+#  House Robber — Dynamic Programming
+
+The **House Robber** problem is one of the most famous DP questions.  
+You must maximize the money you can steal, but **you cannot rob two adjacent houses**.
+
+---
+
+# 🧠 Problem Statement
+
+Given an array `nums` where each element represents the amount of money in a house, return the **maximum amount** you can rob **without robbing two directly adjacent houses**.
+
+Example:
+```
+
+nums = [2,7,9,3,1]
+Output = 12
+(rob houses → 2 + 9 + 1)
+
+```
+
+---
+
+# 🏠 Real-World Analogy
+
+You’re a thief in a neighborhood.  
+If you rob two **adjacent houses**, the alarm system triggers.
+
+So you choose **alternating houses** strategically:
+
+- Rob house `i`  
+- Skip `i+1`  
+- Consider `i+2`  
+
+This naturally becomes a dynamic programming choice.
+
+---
+
+# 🧩 Recurrence Intuition
+
+For each house `i`, you have 2 choices:
+
+### 1️⃣ Rob this house  
+Then you cannot rob previous →  
+`profit = nums[i] + dp[i-2]`
+
+### 2️⃣ Skip this house  
+`profit = dp[i-1]`
+
+So the recurrence is:
+
+```
+
+dp[i] = max( dp[i-1], nums[i] + dp[i-2] )
+
+````
+
+---
+
+# 🐌 Approach 1 — Brute Force Recursion  
+
+### 🧩 Idea  
+Try both decisions for each index:  
+- Rob → move `i+2`  
+- Skip → move `i+1`
+
+### Code
+
+```js
+function robBrute(nums, i = 0) {
+  if (i >= nums.length) return 0;
+
+  const rob = nums[i] + robBrute(nums, i + 2);
+  const skip = robBrute(nums, i + 1);
+
+  return Math.max(rob, skip);
+}
+````
+
+### ❌ Complexity
+
+* **Time:** O(2ⁿ) → exponential
+* **Space:** O(n) recursion
+  Not usable for large inputs.
+
+---
+
+# ⚙️ Approach 2 — Memoization (Top-Down DP)
+
+### 🧩 Idea
+
+Cache results so each index is computed once.
+
+### Code
+
+```js
+function robMemo(nums, i = 0, memo = {}) {
+  if (i >= nums.length) return 0;
+  if (memo[i] !== undefined) return memo[i];
+
+  const rob = nums[i] + robMemo(nums, i + 2, memo);
+  const skip = robMemo(nums, i + 1, memo);
+
+  memo[i] = Math.max(rob, skip);
+  return memo[i];
+}
+```
+
+### ⏱️ Complexity
+
+* **Time:** O(n)
+* **Space:** O(n) recursion + memo
+
+---
+
+# 📦 Approach 3 — Tabulation (Bottom-Up DP)
+
+### 🧩 Idea
+
+Iteratively build dp array from start to end.
+
+### Code
+
+```js
+function robDP(nums) {
+  if (nums.length === 0) return 0;
+  if (nums.length === 1) return nums[0];
+
+  const dp = Array(nums.length).fill(0);
+  
+  dp[0] = nums[0];
+  dp[1] = Math.max(nums[0], nums[1]);
+
+  for (let i = 2; i < nums.length; i++) {
+    dp[i] = Math.max(dp[i - 1], nums[i] + dp[i - 2]);
+  }
+
+  return dp[nums.length - 1];
+}
+```
+
+### ⏱️ Complexity
+
+* **Time:** O(n)
+* **Space:** O(n)
+
+---
+
+# ⚡ Approach 4 — Optimal Space — O(1) DP (Fibonacci Style)
+
+This is the **best and most optimal** solution.
+
+### 🧠 Insight
+
+We only need:
+
+* previous max (`prev1`)
+* second previous max (`prev2`)
+
+### Code
+
+```js
+function rob(nums) {
+  let prev1 = 0; // dp[i-1]
+  let prev2 = 0; // dp[i-2]
+
+  for (let num of nums) {
+    const temp = prev1;
+    prev1 = Math.max(prev1, prev2 + num);
+    prev2 = temp;
+  }
+
+  return prev1;
+}
+```
+
+### ✔ Best complexity
+
+* **Time:** O(n)
+* **Space:** **O(1)**
+
+---
+
+# 🧾 Final Complexity Comparison
+
+| Approach            | Time     | Space    |
+| ------------------- | -------- | -------- |
+| Brute Force         | ❌ O(2ⁿ)  | O(n)     |
+| Memoization         | O(n)     | O(n)     |
+| Tabulation          | O(n)     | O(n)     |
+| **Space-Optimized** | **O(n)** | **O(1)** |
+
+---
+
+# 🎯 Interview Tips
+
+* Mention how it is similar to **Fibonacci**.
+* Explain the recurrence relation clearly.
+* Draw a decision tree to show why brute force explodes.
+* Show how dp[i] transitions from dp[i−1] and dp[i−2].
+* Mention that the final optimal solution only needs 2 variables.
+* If houses are in a circle → it's **House Robber II**
+  (I can generate this MDX article too).
+
+---

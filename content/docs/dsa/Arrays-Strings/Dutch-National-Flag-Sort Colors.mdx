@@ -1,0 +1,198 @@
+---
+title: "1️⃣1️⃣ Dutch National Flag Problem — Sort Colors"
+description: "Brute Force, Better, and Optimal approach (Dutch National Flag Algorithm) with real-world examples, code, explanation, and complexities."
+---
+
+#  Dutch National Flag — Sort Colors  
+**Category:** Arrays  
+**Tags:** Sorting, Two Pointers, In-place
+
+The **Dutch National Flag Problem**, proposed by *Edsger Dijkstra*, asks us to sort an array that contains only **0s, 1s, and 2s** — representing three different colors.
+
+This is a very popular **DSA + interview problem**, especially in companies like **Amazon, Google, Meta**.
+
+---
+
+## 🧠 Problem Statement
+
+Given an array containing only **0s, 1s, and 2s**, sort the array in ascending order **without using extra space** and ideally in **one traversal**.
+
+**Input:** `[2, 0, 2, 1, 1, 0]`  
+**Output:** `[0, 0, 1, 1, 2, 2]`
+
+---
+
+# 🧩 Real-World Analogy  
+### 🎨 Example: Sorting T-shirts in a Store  
+A clothing store sorts T-shirts into bins:  
+- **0 → Small**  
+- **1 → Medium**  
+- **2 → Large**
+
+Instead of doing multiple passes over the rack, the staff sorts in one go:  
+- If the size is *small*, put it in the **left**.  
+- If *medium*, leave it in the **middle**.  
+- If *large*, put it to the **right**.
+
+This is exactly what the **Dutch National Flag algorithm** does.
+
+---
+
+# 🥉 Approach 1 — Brute Force (Using Sorting Algorithm)
+
+### 🛠️ Idea  
+Just use the normal sorting algorithm provided by the language.
+
+### 🧵 Steps  
+1. Apply `sort()` on the array.  
+2. That’s it.
+
+### 🧪 Code (JavaScript)
+```js
+function sortColors(nums) {
+  nums.sort((a, b) => a - b);
+  return nums;
+}
+````
+
+### ⏳ Time Complexity
+
+* **O(n log n)** — because built-in sort uses efficient algorithms.
+
+### 🧠 Space Complexity
+
+* **O(1)** extra space (in JS, sort may use O(log n) stack).
+
+### ❌ Why this is not preferred?
+
+* Doesn’t use the fact that array only contains **0, 1, 2**
+* Not optimal for interviews
+
+---
+
+# 🥈 Approach 2 — Better Approach (Counting Sort)
+
+### 🛠️ Idea
+
+Count number of **0s**, **1s**, and **2s**, then overwrite the array.
+
+### 🧵 Steps
+
+1. Traverse array → count occurrences.
+2. Rebuild array using counts.
+
+### 🧪 Code
+
+```js
+function sortColors(nums) {
+  let count0 = 0, count1 = 0, count2 = 0;
+
+  for (let num of nums) {
+    if (num === 0) count0++;
+    else if (num === 1) count1++;
+    else count2++;
+  }
+
+  let i = 0;
+  while (count0--) nums[i++] = 0;
+  while (count1--) nums[i++] = 1;
+  while (count2--) nums[i++] = 2;
+
+  return nums;
+}
+```
+
+### ⏳ Time Complexity
+
+* **O(n + n) → O(n)**
+
+### 🧠 Space Complexity
+
+* **O(1)**
+
+### ✔️ Better than sorting
+
+But still needs **two passes**.
+
+---
+
+# 🥇 Approach 3 — Optimal Approach
+
+# Dutch National Flag Algorithm (Three-Pointer Method)
+
+This is the most optimal method and the one interviewers expect.
+
+### 🧠 Idea
+
+Keep **three pointers**:
+
+* `low` → boundary for 0s
+* `mid` → current element
+* `high` → boundary for 2s
+
+### 🔁 Logic
+
+* If `nums[mid] == 0`: swap with `low`, move both pointers
+* If `nums[mid] == 1`: just move `mid`
+* If `nums[mid] == 2`: swap with `high`, move `high` backward
+
+### 🧪 Code (Optimal)
+
+```js
+function sortColors(nums) {
+  let low = 0, mid = 0, high = nums.length - 1;
+
+  while (mid <= high) {
+    if (nums[mid] === 0) {
+      [nums[low], nums[mid]] = [nums[mid], nums[low]];
+      low++;
+      mid++;
+    } else if (nums[mid] === 1) {
+      mid++;
+    } else {
+      [nums[mid], nums[high]] = [nums[high], nums[mid]];
+      high--;
+    }
+  }
+  return nums;
+}
+```
+
+---
+
+## 🔍 Dry Run Example
+
+Input: `[2, 0, 1]`
+
+| low | mid | high | Array   | Action          |
+| --- | --- | ---- | ------- | --------------- |
+| 0   | 0   | 2    | [2,0,1] | swap mid ↔ high |
+| 0   | 0   | 1    | [1,0,2] | mid++           |
+| 0   | 1   | 1    | [1,0,2] | mid==1 → pass   |
+| 0   | 2   | 1    | [1,0,2] | loop ends       |
+
+Sorted: `[0,1,2]`
+
+---
+
+## ⏳ Time Complexity
+
+* **O(n)** — single traversal
+
+## 🧠 Space Complexity
+
+* **O(1)** — in-place
+
+---
+
+# 🏁 Final Thoughts
+
+The **Dutch National Flag algorithm** is a great example of:
+
+* Pointer manipulation
+* Thinking in partitions
+* Achieving optimal time + space
+
+### ⭐ Always use the **three-pointer optimal approach** in interviews.
+
+---

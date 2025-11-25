@@ -1,0 +1,171 @@
+---
+title: "1️⃣5️⃣ Detect Cycle in Linked List — Floyd’s Cycle Detection (Tortoise & Hare)"
+description: "Brute Force, Better, and Optimal approaches to detect a cycle in a linked list with real-world examples, code, explanation, and complexities."
+---
+
+#  Detect Cycle in Linked List  
+**Category:** Linked List  
+**Tags:** Floyd’s Algorithm, Two Pointers, Fast-Slow Pointer, Cycles
+
+One of the most repeated interview questions for **FAANG**, and one of the easiest ways to check your understanding of **pointer manipulation**.
+
+---
+
+# 🧠 Problem Statement
+
+Given the `head` of a linked list, return **true** if there is a cycle**, otherwise return false.**
+
+A cycle exists if some node points back to a previous node.
+
+---
+
+# 🧩 Real-World Analogy  
+### 🏃‍♂️🐢 Running Track (Tortoise & Hare)
+
+Imagine two runners on a circular track:
+
+- 🐢 **Slow Runner** → moves 1 step at a time  
+- 🐇 **Fast Runner** → moves 2 steps at a time  
+
+If the track is circular, the fast runner will eventually **lap** the slow runner.  
+If the track is straight (no cycle), they will **never meet**.
+
+This is exactly how Floyd’s Algorithm works.
+
+---
+
+# 🥉 Approach 1 — Brute Force (Marking Visited Nodes)
+
+### 🛠️ Idea  
+Keep a **set of visited nodes**.
+
+### Steps  
+1. Traverse linked list  
+2. Store each node in a set  
+3. If you reach a node you’ve already visited → cycle exists
+
+### ❗ Why it's not good?  
+- Requires extra memory  
+- Not optimal for interviews
+
+### ⏳ Time Complexity  
+- **O(n)**
+
+### 🧠 Space Complexity  
+- **O(n)** — storing visited nodes
+
+### 🧪 Code
+```js
+function hasCycle(head) {
+  let visited = new Set();
+
+  while (head) {
+    if (visited.has(head)) return true;
+    visited.add(head);
+    head = head.next;
+  }
+
+  return false;
+}
+````
+
+---
+
+# 🥈 Approach 2 — Modify Node Structure (Marking Nodes)
+
+### ⚠️ Not recommended in interviews
+
+You can modify each visited node by marking it (e.g., setting a flag).
+
+But this:
+
+* Modifies original data (bad practice)
+* Fails if nodes don't allow mutation
+
+### ⏳ Time Complexity
+
+* **O(n)**
+
+### 🧠 Space Complexity
+
+* **O(1)**
+  (but modifies original list — unacceptable!)
+
+---
+
+# 🥇 Approach 3 — Optimal (Floyd’s Cycle Detection Algorithm)
+
+This is the **most important** and **most expected** solution.
+
+### 🔥 Key Idea
+
+Use two pointers:
+
+* **slow** → moves 1 step
+* **fast** → moves 2 steps
+
+If they ever point to the **same node**, a cycle exists.
+If `fast` reaches `null`, no cycle exists.
+
+---
+
+## 🧪 Code (Optimal)
+
+```js
+function hasCycle(head) {
+  if (!head || !head.next) return false;
+
+  let slow = head;
+  let fast = head;
+
+  while (fast && fast.next) {
+    slow = slow.next;         // 1 step
+    fast = fast.next.next;    // 2 steps
+
+    if (slow === fast) return true; // cycle detected
+  }
+
+  return false; // reached end -> no cycle
+}
+```
+
+---
+
+## 🔍 Dry Run Example
+
+List with cycle:
+
+```
+1 → 2 → 3 → 4
+        ↑   ↓
+        ←←←←
+```
+
+| Step | Slow | Fast | Result                |
+| ---- | ---- | ---- | --------------------- |
+| 1    | 1    | 2    | continue              |
+| 2    | 2    | 4    | continue              |
+| 3    | 3    | 3    | slow === fast → cycle |
+
+---
+
+# ⏳ Time Complexity
+
+* **O(n)** — each pointer traverses at most n steps
+
+# 🧠 Space Complexity
+
+* **O(1)** — constant extra space
+* Does not modify the list
+
+---
+
+# 🏁 Final Thoughts
+
+Floyd’s Algorithm is optimal because:
+✔️ No extra memory
+✔️ Simple pointer movement
+✔️ Works in linear time
+✔️ Most expected in interviews
+
+---

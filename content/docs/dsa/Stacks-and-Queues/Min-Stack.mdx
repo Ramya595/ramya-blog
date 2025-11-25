@@ -1,0 +1,233 @@
+---
+title: "1️⃣6️⃣ Min Stack"
+description: "Brute force, better, and optimal approach to design a Min Stack — always return minimum element in O(1). Includes real-world examples, code, and complexity."
+---
+
+#  Min Stack — Design a Stack That Returns Minimum in O(1)
+
+A **Min Stack** is a special stack that supports:
+
+- `push(x)`
+- `pop()`
+- `top()`
+- `getMin()` → returns **minimum element in constant time O(1)**
+
+This is a very common **DSA + System Design** interview problem because it tests:
+- data structure design
+- time/space efficiency
+- thinking beyond basic stacks
+
+---
+
+## 🧠 Real-World Examples
+
+### 🏦 1. Banking / Wallet Systems  
+Track the **minimum transaction amount** over time efficiently.
+
+### 📉 2. Stock Market Price Monitoring  
+Find the **minimum stock price** up to the current day.
+
+### 🎮 3. Game Development  
+Track **minimum health points** or **minimum scores** in a stack of moves.
+
+---
+
+---
+
+# 🐌 Brute Force Solution — O(n) getMin()
+
+### 🧩 Idea
+Every time `getMin()` is called → **iterate through the entire stack** and find the smallest value.
+
+### ❌ Why it's bad?
+- Slow `getMin()` → **O(n)** per call.
+- Interviewers expect **O(1)** `getMin()`.
+
+### ✅ Code
+
+```js
+class MinStack {
+  constructor() {
+    this.stack = [];
+  }
+
+  push(x) {
+    this.stack.push(x);
+  }
+
+  pop() {
+    return this.stack.pop();
+  }
+
+  top() {
+    return this.stack[this.stack.length - 1];
+  }
+
+  getMin() {
+    let min = Infinity;
+    for (let val of this.stack) {
+      min = Math.min(min, val);
+    }
+    return min;
+  }
+}
+````
+
+### ⏱️ Time & Space
+
+| Operation  | Time   | Space |
+| ---------- | ------ | ----- |
+| push       | O(1)   | O(n)  |
+| pop        | O(1)   | O(n)  |
+| **getMin** | ❌ O(n) | O(n)  |
+
+---
+
+---
+
+# 🧪 Better Approach — Store Min So Far Alongside Value
+
+### 🧩 Idea
+
+Instead of scanning the whole stack, store **current minimum** with each element.
+
+Example stack (value, minSoFar):
+
+```
+push 5 → (5,5)
+push 3 → (3,3)
+push 8 → (8,3)
+push 2 → (2,2)
+```
+
+The top element always holds the **min so far** at that time.
+
+### 👍 Improvement
+
+* All operations → **O(1)**
+* Space used → **O(n)** (duplicate mins stored)
+
+### Code
+
+```js
+class MinStack {
+  constructor() {
+    this.stack = [];
+  }
+
+  push(x) {
+    if (this.stack.length === 0) {
+      this.stack.push([x, x]);
+    } else {
+      let currentMin = this.stack[this.stack.length - 1][1];
+      this.stack.push([x, Math.min(x, currentMin)]);
+    }
+  }
+
+  pop() {
+    this.stack.pop();
+  }
+
+  top() {
+    return this.stack[this.stack.length - 1][0];
+  }
+
+  getMin() {
+    return this.stack[this.stack.length - 1][1];
+  }
+}
+```
+
+### ⏱️ Time & Space
+
+| Operation | Time | Space  |
+| --------- | ---- | ------ |
+| push      | O(1) | ❌ O(n) |
+| pop       | O(1) | O(n)   |
+| getMin    | O(1) | O(n)   |
+
+---
+
+---
+
+# ⚡ Optimal Approach — Use Two Stacks
+
+### 🧩 Idea
+
+Use:
+
+1️⃣ **Main Stack** → store values
+2️⃣ **Min Stack** → store only values that represent new minimums
+
+### Example
+
+```
+push 5 → minStack: [5]
+push 3 → minStack: [5,3]
+push 8 → minStack: [5,3]
+push 2 → minStack: [5,3,2]
+pop 2 → remove from both
+```
+
+### Why this is optimal?
+
+* No redundant "min" storage
+* Only push to min-stack **when needed**
+* Space-efficient
+
+### Code
+
+```js
+class MinStack {
+  constructor() {
+    this.stack = [];
+    this.minStack = [];
+  }
+
+  push(x) {
+    this.stack.push(x);
+    if (this.minStack.length === 0 || x <= this.minStack[this.minStack.length - 1]) {
+      this.minStack.push(x);
+    }
+  }
+
+  pop() {
+    let popped = this.stack.pop();
+    if (popped === this.minStack[this.minStack.length - 1]) {
+      this.minStack.pop();
+    }
+  }
+
+  top() {
+    return this.stack[this.stack.length - 1];
+  }
+
+  getMin() {
+    return this.minStack[this.minStack.length - 1];
+  }
+}
+```
+
+---
+
+## 🏁 Final Complexity
+
+| Operation  | Time     | Space    |
+| ---------- | -------- | -------- |
+| push       | O(1)     | **O(n)** |
+| pop        | O(1)     | O(n)     |
+| top        | O(1)     | O(n)     |
+| **getMin** | **O(1)** | O(n)     |
+
+This is the **most optimal approach**, accepted in all coding interviews.
+
+---
+
+## 🎯 Interview Tips
+
+* Always explain **why O(1) getMin is required**.
+* Mention the **two-stack optimal pattern**.
+* Discuss **space trade-offs**.
+* Give **real-world examples** to stand out.
+
+---

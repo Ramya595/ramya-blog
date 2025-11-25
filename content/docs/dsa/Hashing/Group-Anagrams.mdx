@@ -1,0 +1,223 @@
+---
+title: "1️⃣3️⃣ Group Anagrams — Hashing + String Manipulation"
+description: "Brute Force, Better, and Optimal approaches to group anagrams with real-world examples, code, explanation, and complexities."
+---
+
+#  Group Anagrams  
+**Category:** Strings / Hashing  
+**Tags:** Anagrams, HashMap, Frequency Count, Grouping
+
+"Group Anagrams" is one of the most commonly asked interview problems at **Google, Amazon, Microsoft**, and startups.  
+It tests your understanding of **string manipulation**, **hashing**, and **efficient grouping**.
+
+---
+
+# 🧠 Problem Statement
+
+Given an array of strings, group the words that are **anagrams** of each other.
+
+**Input:**  
+`["eat", "tea", "tan", "ate", "nat", "bat"]`
+
+**Output:**  
+`[["eat","tea","ate"], ["tan","nat"], ["bat"]]`
+
+---
+
+# 🧩 Real-World Analogy  
+
+### 🍽️ Restaurant Ordering System (Anagram Bins)
+
+Imagine each word is an order slip in a restaurant.
+
+- “eat”, “tea”, “ate” → same letters → same bin  
+- “tan”, “nat” → same bin  
+- “bat” → stays alone
+
+Just like organizing kitchen orders by ingredients, grouping anagrams means putting words with the **same characters** together.
+
+---
+
+# 🥉 Approach 1 — Brute Force  
+### 🛠️ Idea  
+For each word, check all other words to see if they are anagrams.
+
+### ❗ Why this is bad?  
+- Checking anagram equality requires sorting or frequency matching.  
+- Comparing each word with every other → too slow.
+
+### ⏳ Time Complexity  
+- **O(n² * k log k)**  
+  - n = number of words  
+  - k = length of each word  
+
+### 🧠 Space Complexity  
+- **O(1)** (ignoring output list)
+
+### 🧪 Code (Not recommended)
+```js
+function groupAnagrams(strs) {
+  let used = new Array(strs.length).fill(false);
+  let result = [];
+
+  for (let i = 0; i < strs.length; i++) {
+    if (used[i]) continue;
+
+    let group = [strs[i]];
+    used[i] = true;
+
+    for (let j = i + 1; j < strs.length; j++) {
+      if (!used[j] && isAnagram(strs[i], strs[j])) {
+        group.push(strs[j]);
+        used[j] = true;
+      }
+    }
+
+    result.push(group);
+  }
+
+  return result;
+}
+
+function isAnagram(a, b) {
+  return a.split("").sort().join("") === b.split("").sort().join("");
+}
+````
+
+---
+
+# 🥈 Approach 2 — Better (Sorting Each Word)
+
+### 🛠️ Idea
+
+Two anagrams have the **same sorted string**.
+
+Example:
+
+* `eat` → `aet`
+* `tea` → `aet`
+* `ate` → `aet`
+
+So use the sorted word as a **key** in a map.
+
+### 🧪 Code
+
+```js
+function groupAnagrams(strs) {
+  let map = new Map();
+
+  for (let word of strs) {
+    let sorted = word.split("").sort().join("");
+
+    if (!map.has(sorted)) map.set(sorted, []);
+    map.get(sorted).push(word);
+  }
+
+  return Array.from(map.values());
+}
+```
+
+### ⏳ Time Complexity
+
+* Sorting each word: **O(k log k)**
+* For n words: **O(n * k log k)**
+
+### 🧠 Space Complexity
+
+* **O(n * k)** — storing grouped words
+
+### ✔️ Good approach
+
+But not the most optimal since sorting each word costs time.
+
+---
+
+# 🥇 Approach 3 — Optimal (Character Frequency Hashing)
+
+### 🔥 Key Idea
+
+Instead of sorting, create a **frequency signature** based on characters.
+
+For "eat":
+
+| Letter | e | a | t |
+| ------ | - | - | - |
+| Count  | 1 | 1 | 1 |
+
+Represent it as a compact signature string:
+`"1#1#1#0#0#...#"`
+
+This makes grouping **O(k)** per word instead of **O(k log k)**.
+
+### 🧪 Code (Optimal)
+
+```js
+function groupAnagrams(strs) {
+  let map = new Map();
+
+  for (let word of strs) {
+    let freq = new Array(26).fill(0);
+    for (let ch of word) {
+      freq[ch.charCodeAt(0) - 97]++;
+    }
+
+    let key = freq.join('#');
+
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(word);
+  }
+
+  return Array.from(map.values());
+}
+```
+
+---
+
+## 🔍 Dry Run Example
+
+Input:
+
+```
+["eat","tea","tan","ate","nat","bat"]
+```
+
+| Word | Signature | Group   |
+| ---- | --------- | ------- |
+| eat  | 1#1#1#... | Group 1 |
+| tea  | 1#1#1#... | Group 1 |
+| ate  | 1#1#1#... | Group 1 |
+| tan  | 1#0#1#... | Group 2 |
+| nat  | 1#0#1#... | Group 2 |
+| bat  | 1#1#0#... | Group 3 |
+
+---
+
+# ⏳ Time Complexity
+
+* Creating frequency count: **O(k)**
+* For n words: **O(n * k)**
+* Faster than sorting-based.
+
+# 🧠 Space Complexity
+
+* **O(n * k)**
+
+---
+
+# 🏁 Final Thoughts
+
+The **frequency-hash method** is the best and most scalable:
+
+### ✔️ No sorting
+
+### ✔️ Fast grouping
+
+### ✔️ Best for very large datasets
+
+This problem strengthens skills in:
+
+* Hashing
+* String manipulation
+* Optimization of naive approaches
+
+---

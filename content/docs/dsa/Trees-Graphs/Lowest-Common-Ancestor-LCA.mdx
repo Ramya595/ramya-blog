@@ -1,0 +1,256 @@
+---
+title: "1️⃣8️⃣ Lowest Common Ancestor (LCA)"
+description: "Complete guide to Lowest Common Ancestor (LCA) with brute force, better, and optimal approaches including parent pointers and binary lifting. Includes real-world examples, time & space complexity."
+---
+
+# 8️⃣ Lowest Common Ancestor (LCA)
+
+The **Lowest Common Ancestor (LCA)** of two nodes `p` and `q` in a binary tree is:
+
+> **The lowest (deepest) node which has both p and q as descendants.**
+
+LCA is a very common **tree + recursion** interview question and is used in many real-world systems like folder structure, organization hierarchy, and version control.
+
+---
+
+# 🧠 Real-World Examples
+
+### 🗂️ 1. File / Folder System
+Finding the **common parent directory** of two files.
+
+### 👨‍👩‍👧 Family Tree Applications  
+Finding the **closest common ancestor** of two people.
+
+### 🏢 3. Organization Chart  
+Finding the **closest manager** of two employees.
+
+### 🪢 4. Git Version Control  
+Finding the **merge base** (common ancestor commit) of two branches.
+
+---
+
+# 🌳 Problem Definition
+
+Given a binary tree and two nodes `p` and `q`, return their **Lowest Common Ancestor**.
+
+---
+
+# 🐌 Brute Force Approach — O(n²)
+
+### 🧩 Idea  
+1. For both `p` and `q`, find **path from root** to each node.  
+2. Compare paths and find last common element.
+
+Example:
+```
+
+root → ... → 5 → 9
+root → ... → 5 → 12
+LCA = 5
+
+````
+
+### ❌ Why it's inefficient?
+- Finding each path takes **O(n)**  
+- Comparing takes **O(n)**  
+- Total worst-case **O(n²)**  
+
+### Code
+
+```js
+function findPath(root, target, path) {
+  if (!root) return false;
+
+  path.push(root);
+
+  if (root === target) return true;
+
+  if (findPath(root.left, target, path) || findPath(root.right, target, path)) {
+    return true;
+  }
+
+  path.pop();
+  return false;
+}
+
+function lcaBruteForce(root, p, q) {
+  let path1 = [], path2 = [];
+
+  findPath(root, p, path1);
+  findPath(root, q, path2);
+
+  let i = 0;
+  while (i < path1.length && i < path2.length && path1[i] === path2[i]) {
+    i++;
+  }
+
+  return path1[i - 1];
+}
+````
+
+### ⏱️ Complexity
+
+| Step          | Time    | Space |
+| ------------- | ------- | ----- |
+| Path building | O(n)    | O(n)  |
+| Compare       | O(n)    | O(n)  |
+| **Total**     | ❌ O(n²) | O(n)  |
+
+---
+
+# 🧪 Better Approach — Standard DFS (Recursive) — O(n)
+
+### 🧩 Idea (Classic Approach)
+
+DFS from the root:
+
+1. If root is `null` → return
+2. If root is `p` or `q` → return root
+3. Recursively check left and right
+4. If both sides return non-null → current node is LCA
+5. Else return whichever side is non-null
+
+### Visualization
+
+```
+      6
+    /   \
+   2     8
+  / \   / \
+ 1  4  7  9
+
+LCA(1, 4) = 2
+```
+
+### Code
+
+```js
+function lowestCommonAncestor(root, p, q) {
+  if (root === null || root === p || root === q) return root;
+
+  const left = lowestCommonAncestor(root.left, p, q);
+  const right = lowestCommonAncestor(root.right, p, q);
+
+  if (left && right) return root;
+
+  return left ? left : right;
+}
+```
+
+### ⏱️ Complexity
+
+| Operation | Time     | Space                       |
+| --------- | -------- | --------------------------- |
+| DFS       | O(n)     | O(h) recursion (worst O(n)) |
+| **Total** | **O(n)** | O(h)                        |
+
+---
+
+# ⚡ Optimal Approach — LCA in O(log n) Using Binary Lifting
+
+*(For multiple repeated queries)*
+
+This method is used when:
+
+* Many LCA queries
+* Static tree
+* Need fast queries (competitive programming)
+
+### 🧩 Idea
+
+Preprocessing:
+
+1. Compute `depth[node]`
+2. Precompute `parent[node][k]` → 2ᵏth ancestor
+3. Lift both nodes to same depth
+4. Lift both up together until LCA found
+
+### Preprocessing Code (O(n log n))
+
+```js
+function preprocess(root) {
+  const LOG = 17; // for n ≤ 1e5
+  const parent = Array(100005).fill(null).map(() => Array(LOG).fill(null));
+  const depth = {};
+
+  function dfs(node, par) {
+    if (!node) return;
+
+    parent[node.val][0] = par;
+    depth[node.val] = par ? depth[par.val] + 1 : 0;
+
+    dfs(node.left, node);
+    dfs(node.right, node);
+  }
+
+  dfs(root, null);
+
+  for (let k = 1; k < LOG; k++) {
+    for (let v = 0; v < parent.length; v++) {
+      if (parent[v][k - 1] !== null) {
+        parent[v][k] = parent[parent[v][k - 1].val][k - 1];
+      }
+    }
+  }
+
+  return { parent, depth };
+}
+```
+
+### LCA Query — O(log n)
+
+```js
+function lcaBinaryLifting(u, v, parent, depth) {
+  const LOG = parent[0].length;
+
+  if (depth[u.val] < depth[v.val]) [u, v] = [v, u];
+
+  let diff = depth[u.val] - depth[v.val];
+
+  for (let k = 0; k < LOG; k++) {
+    if (diff & (1 << k)) {
+      u = parent[u.val][k];
+    }
+  }
+
+  if (u === v) return u;
+
+  for (let k = LOG - 1; k >= 0; k--) {
+    if (parent[u.val][k] !== parent[v.val][k]) {
+      u = parent[u.val][k];
+      v = parent[v.val][k];
+    }
+  }
+
+  return parent[u.val][0];
+}
+```
+
+### ⏱️ Complexity
+
+| Task          | Time           | Space      |
+| ------------- | -------------- | ---------- |
+| Preprocessing | O(n log n)     | O(n log n) |
+| Query         | ⚡ **O(log n)** | O(1)       |
+
+---
+
+# 🎯 When to Use Which Approach?
+
+| Approach       | Best For         | Time           |
+| -------------- | ---------------- | -------------- |
+| Brute Force    | Understanding    | ❌ O(n²)        |
+| DFS (Standard) | One-time queries | **O(n)**       |
+| Binary Lifting | Many LCA queries | ⚡ **O(log n)** |
+
+---
+
+# 📝 Interview Tips
+
+* Always mention **DFS recursive** approach first — it’s the expected solution.
+* Mention binary lifting if interviewer hints at “many queries”.
+* Use real-world examples (folder structure, Git merge-base).
+* Discuss space vs performance trade-off.
+* Walk through a diagram while explaining—LCA is visual.
+
+---
